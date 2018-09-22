@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace AdmissionsManager.Model
 {
-    class Admission
+    class Admission : Table
     {
-        public Admission()
-        {
 
+        public Admission() : base(Tabels.Admissions)
+        {
         }
     }
 }

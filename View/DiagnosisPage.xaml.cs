@@ -22,9 +22,11 @@ namespace AdmissionsManager.View
     /// </summary>
     public sealed partial class DiagnosisPage : Page
     {
-        public DiagnosisPage()
+        private Controller DatabaseController;
+        public DiagnosisPage(Controller dbController)
         {
             this.InitializeComponent();
+            DatabaseController = dbController;
         }
     }
 }

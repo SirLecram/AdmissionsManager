@@ -22,9 +22,11 @@ namespace AdmissionsManager.View
     /// </summary>
     public sealed partial class HomePage : Page
     {
-        public HomePage()
+        private Controller DatabaseController;
+        public HomePage(Controller dbController)
         {
             this.InitializeComponent();
+            DatabaseController = dbController;
         }
     }
 }

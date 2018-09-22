@@ -3,8 +3,10 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:AdmissionsManager.View"
+    xmlns:inne="using:AdmissionsManager.Model"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
@@ -21,8 +23,8 @@
             <ColumnDefinition/>
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
-        <TextBlock Text="Pacjenci" HorizontalAlignment="Left" Margin="15, 5, 0, 0" FontSize="20"
-                   VerticalAlignment="Top"/>
+        <TextBlock x:ConnectionId='2' Text="Pacjenci" HorizontalAlignment="Left" Margin="15, 5, 0, 0" FontSize="20"
+                   VerticalAlignment="Top" Name="pageTitle" Grid.ColumnSpan="2"/>
         <Button Content="Nowe przyjęcie" Margin="10, 0, 20, 0" HorizontalAlignment="Stretch" Grid.Row="1"/>
         <Button Content="Usuń zaznaczone" Margin="10, 0, 20, 0" HorizontalAlignment="Stretch" Grid.Row="1" Grid.Column="1"/>
         <!-- </StackPanel> -->
@@ -44,7 +46,7 @@
                      VerticalAlignment="Center" Margin="10"/>
             <TextBlock Text="Szukaj w:" Grid.Row="2" HorizontalAlignment="Stretch" 
                      VerticalAlignment="Center" Margin="10"/>
-            <TextBox x:ConnectionId='2' Name="searchBox" Grid.Row="1" Grid.ColumnSpan="2" Grid.Column="1" HorizontalAlignment="Stretch" 
+            <TextBox x:ConnectionId='12' Name="searchBox" Grid.Row="1" Grid.ColumnSpan="2" Grid.Column="1" HorizontalAlignment="Stretch" 
                      VerticalAlignment="Center" Margin="10"/>
             <ComboBox Grid.Row="2" Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Center" Margin="10"/>
             <Button Content="Przeszukaj bazę" Grid.Row="2" Grid.Column="2" VerticalAlignment="Center" 
@@ -77,8 +79,106 @@
                     Margin="15, 0, 15, 0"/>
 
         </Grid>
-        <ListView Grid.Row="3" Grid.ColumnSpan="4" Margin="20, 5, 20, 5" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
-                  BorderBrush="AliceBlue" BorderThickness="2"/>
+        <Grid Grid.Row="3" Grid.ColumnSpan="4" Margin="20, 5, 20, 5" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
+                  BorderBrush="AliceBlue" BorderThickness="2" >
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <ListView Grid.Row="0" Margin="20, 5, 20, 5" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" 
+                      HorizontalContentAlignment="Stretch">
+            <ListView.HeaderTemplate >
+
+                <DataTemplate >
+                    <Grid  >
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock Text="PESEL" Margin="8,0"  Foreground="DarkRed" Grid.Column="0"/>
+                        <TextBlock Text="nazwisko"  Foreground="DarkRed" Grid.Column="1"/>
+                        <TextBlock Text="imie"  Foreground="DarkRed" Grid.Column="2"/>
+                        <TextBlock Text="data" Foreground="DarkRed" Grid.Column="3"/>
+                        <TextBlock Text="stan" Foreground="DarkRed" Grid.Column="4"/>
+                        <TextBlock Text="plec"  Foreground="DarkRed" Grid.Column="5"/>
+                    </Grid>
+                </DataTemplate>
+            </ListView.HeaderTemplate>
+            </ListView>
+            <ListView x:ConnectionId='3' Grid.Row="3" Grid.ColumnSpan="4" Margin="20, 5, 20, 5" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
+                  BorderBrush="AliceBlue" BorderThickness="2" Name="databaseView" 
+                  ScrollViewer.VerticalScrollBarVisibility="Auto"
+                  ScrollViewer.IsVerticalRailEnabled="True"
+                  ScrollViewer.VerticalScrollMode="Enabled"
+                  ScrollViewer.HorizontalScrollMode="Enabled"
+                  ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                  ScrollViewer.IsHorizontalRailEnabled="True">
+
+            <!--    <ListView.HeaderTemplate>
+                
+                <DataTemplate>
+                    <Grid  >
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock Text="PESEL" Margin="8,0"  Foreground="DarkRed" Grid.Column="0"/>
+                        <TextBlock Text="nazwisko"  Foreground="DarkRed" Grid.Column="1"/>
+                        <TextBlock Text="imie"  Foreground="DarkRed" Grid.Column="2"/>
+                        <TextBlock Text="data" Foreground="DarkRed" Grid.Column="3"/>
+                        <TextBlock Text="stan" Foreground="DarkRed" Grid.Column="4"/>
+                        <TextBlock Text="plec"  Foreground="DarkRed" Grid.Column="5"/>
+                    </Grid>
+                </DataTemplate>
+            </ListView.HeaderTemplate> -->
+            <ListView.ItemTemplate>
+                
+                <DataTemplate                          >
+                    
+                    <Grid x:ConnectionId='4' >
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition />
+                            <ColumnDefinition />
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock x:ConnectionId='5' Name="ItemId"
+                                                               
+                                    Grid.Column="0" />
+                        <TextBlock x:ConnectionId='6' Name="ItemName"
+                                                           
+                                     Grid.Column="1"/>
+                        <TextBlock x:ConnectionId='7'                     
+                                    Grid.Column="2"/>
+                        <TextBlock x:ConnectionId='8'                          
+                                   Grid.Column="3"/>
+                        <TextBlock x:ConnectionId='9'                             
+                                    Grid.Column="4"/>
+                        <TextBlock x:ConnectionId='10'                           
+                                    Grid.Column="5"/>
+                    </Grid>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+            <ListView.ItemContainerStyle>
+                <Style TargetType="ListViewItem">
+                    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                </Style>
+            </ListView.ItemContainerStyle>
+
+            </ListView>
+        </Grid>
 
     </Grid>
 </Page>

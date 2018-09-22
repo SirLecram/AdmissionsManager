@@ -189,7 +189,7 @@ namespace AdmissionsManager.AdmissionsManager_XamlTypeInfo
 
         private void InitTypeTables()
         {
-            _typeNameTable = new string[10];
+            _typeNameTable = new string[13];
             _typeNameTable[0] = "AdmissionsManager.MainPage";
             _typeNameTable[1] = "Windows.UI.Xaml.Controls.Page";
             _typeNameTable[2] = "Windows.UI.Xaml.Controls.UserControl";
@@ -198,10 +198,13 @@ namespace AdmissionsManager.AdmissionsManager_XamlTypeInfo
             _typeNameTable[5] = "AdmissionsManager.View.DoctorsPage";
             _typeNameTable[6] = "AdmissionsManager.View.HomePage";
             _typeNameTable[7] = "AdmissionsManager.View.PatientsPage";
-            _typeNameTable[8] = "AdmissionsManager.View.RoomsPage";
-            _typeNameTable[9] = "AdmissionsManager.View.SurgeriesPage";
+            _typeNameTable[8] = "System.Collections.ObjectModel.ObservableCollection`1<Object>";
+            _typeNameTable[9] = "System.Collections.ObjectModel.Collection`1<Object>";
+            _typeNameTable[10] = "Object";
+            _typeNameTable[11] = "AdmissionsManager.View.RoomsPage";
+            _typeNameTable[12] = "AdmissionsManager.View.SurgeriesPage";
 
-            _typeTable = new global::System.Type[10];
+            _typeTable = new global::System.Type[13];
             _typeTable[0] = typeof(global::AdmissionsManager.MainPage);
             _typeTable[1] = typeof(global::Windows.UI.Xaml.Controls.Page);
             _typeTable[2] = typeof(global::Windows.UI.Xaml.Controls.UserControl);
@@ -210,8 +213,11 @@ namespace AdmissionsManager.AdmissionsManager_XamlTypeInfo
             _typeTable[5] = typeof(global::AdmissionsManager.View.DoctorsPage);
             _typeTable[6] = typeof(global::AdmissionsManager.View.HomePage);
             _typeTable[7] = typeof(global::AdmissionsManager.View.PatientsPage);
-            _typeTable[8] = typeof(global::AdmissionsManager.View.RoomsPage);
-            _typeTable[9] = typeof(global::AdmissionsManager.View.SurgeriesPage);
+            _typeTable[8] = typeof(global::System.Collections.ObjectModel.ObservableCollection<global::System.Object>);
+            _typeTable[9] = typeof(global::System.Collections.ObjectModel.Collection<global::System.Object>);
+            _typeTable[10] = typeof(global::System.Object);
+            _typeTable[11] = typeof(global::AdmissionsManager.View.RoomsPage);
+            _typeTable[12] = typeof(global::AdmissionsManager.View.SurgeriesPage);
         }
 
         private int LookupTypeIndexByName(string typeName)
@@ -247,13 +253,20 @@ namespace AdmissionsManager.AdmissionsManager_XamlTypeInfo
         }
 
         private object Activate_0_MainPage() { return new global::AdmissionsManager.MainPage(); }
-        private object Activate_3_AdmissionsPage() { return new global::AdmissionsManager.View.AdmissionsPage(); }
-        private object Activate_4_DiagnosisPage() { return new global::AdmissionsManager.View.DiagnosisPage(); }
-        private object Activate_5_DoctorsPage() { return new global::AdmissionsManager.View.DoctorsPage(); }
-        private object Activate_6_HomePage() { return new global::AdmissionsManager.View.HomePage(); }
-        private object Activate_7_PatientsPage() { return new global::AdmissionsManager.View.PatientsPage(); }
-        private object Activate_8_RoomsPage() { return new global::AdmissionsManager.View.RoomsPage(); }
-        private object Activate_9_SurgeriesPage() { return new global::AdmissionsManager.View.SurgeriesPage(); }
+        private object Activate_8_ObservableCollection() { return new global::System.Collections.ObjectModel.ObservableCollection<global::System.Object>(); }
+        private object Activate_9_Collection() { return new global::System.Collections.ObjectModel.Collection<global::System.Object>(); }
+        private void VectorAdd_8_ObservableCollection(object instance, object item)
+        {
+            var collection = (global::System.Collections.Generic.ICollection<global::System.Object>)instance;
+            var newItem = (global::System.Object)item;
+            collection.Add(newItem);
+        }
+        private void VectorAdd_9_Collection(object instance, object item)
+        {
+            var collection = (global::System.Collections.Generic.ICollection<global::System.Object>)instance;
+            var newItem = (global::System.Object)item;
+            collection.Add(newItem);
+        }
 
         private global::Windows.UI.Xaml.Markup.IXamlType CreateXamlType(int typeIndex)
         {
@@ -282,49 +295,61 @@ namespace AdmissionsManager.AdmissionsManager_XamlTypeInfo
 
             case 3:   //  AdmissionsManager.View.AdmissionsPage
                 userType = new global::AdmissionsManager.AdmissionsManager_XamlTypeInfo.XamlUserType(this, typeName, type, GetXamlTypeByName("Windows.UI.Xaml.Controls.Page"));
-                userType.Activator = Activate_3_AdmissionsPage;
                 userType.SetIsLocalType();
                 xamlType = userType;
                 break;
 
             case 4:   //  AdmissionsManager.View.DiagnosisPage
                 userType = new global::AdmissionsManager.AdmissionsManager_XamlTypeInfo.XamlUserType(this, typeName, type, GetXamlTypeByName("Windows.UI.Xaml.Controls.Page"));
-                userType.Activator = Activate_4_DiagnosisPage;
                 userType.SetIsLocalType();
                 xamlType = userType;
                 break;
 
             case 5:   //  AdmissionsManager.View.DoctorsPage
                 userType = new global::AdmissionsManager.AdmissionsManager_XamlTypeInfo.XamlUserType(this, typeName, type, GetXamlTypeByName("Windows.UI.Xaml.Controls.Page"));
-                userType.Activator = Activate_5_DoctorsPage;
                 userType.SetIsLocalType();
                 xamlType = userType;
                 break;
 
             case 6:   //  AdmissionsManager.View.HomePage
                 userType = new global::AdmissionsManager.AdmissionsManager_XamlTypeInfo.XamlUserType(this, typeName, type, GetXamlTypeByName("Windows.UI.Xaml.Controls.Page"));
-                userType.Activator = Activate_6_HomePage;
                 userType.SetIsLocalType();
                 xamlType = userType;
                 break;
 
             case 7:   //  AdmissionsManager.View.PatientsPage
                 userType = new global::AdmissionsManager.AdmissionsManager_XamlTypeInfo.XamlUserType(this, typeName, type, GetXamlTypeByName("Windows.UI.Xaml.Controls.Page"));
-                userType.Activator = Activate_7_PatientsPage;
+                userType.AddMemberName("PatientList");
                 userType.SetIsLocalType();
                 xamlType = userType;
                 break;
 
-            case 8:   //  AdmissionsManager.View.RoomsPage
+            case 8:   //  System.Collections.ObjectModel.ObservableCollection`1<Object>
+                userType = new global::AdmissionsManager.AdmissionsManager_XamlTypeInfo.XamlUserType(this, typeName, type, GetXamlTypeByName("System.Collections.ObjectModel.Collection`1<Object>"));
+                userType.CollectionAdd = VectorAdd_8_ObservableCollection;
+                userType.SetIsReturnTypeStub();
+                xamlType = userType;
+                break;
+
+            case 9:   //  System.Collections.ObjectModel.Collection`1<Object>
+                userType = new global::AdmissionsManager.AdmissionsManager_XamlTypeInfo.XamlUserType(this, typeName, type, GetXamlTypeByName("Object"));
+                userType.Activator = Activate_9_Collection;
+                userType.CollectionAdd = VectorAdd_9_Collection;
+                xamlType = userType;
+                break;
+
+            case 10:   //  Object
+                xamlType = new global::AdmissionsManager.AdmissionsManager_XamlTypeInfo.XamlSystemBaseType(typeName, type);
+                break;
+
+            case 11:   //  AdmissionsManager.View.RoomsPage
                 userType = new global::AdmissionsManager.AdmissionsManager_XamlTypeInfo.XamlUserType(this, typeName, type, GetXamlTypeByName("Windows.UI.Xaml.Controls.Page"));
-                userType.Activator = Activate_8_RoomsPage;
                 userType.SetIsLocalType();
                 xamlType = userType;
                 break;
 
-            case 9:   //  AdmissionsManager.View.SurgeriesPage
+            case 12:   //  AdmissionsManager.View.SurgeriesPage
                 userType = new global::AdmissionsManager.AdmissionsManager_XamlTypeInfo.XamlUserType(this, typeName, type, GetXamlTypeByName("Windows.UI.Xaml.Controls.Page"));
-                userType.Activator = Activate_9_SurgeriesPage;
                 userType.SetIsLocalType();
                 xamlType = userType;
                 break;
@@ -333,11 +358,26 @@ namespace AdmissionsManager.AdmissionsManager_XamlTypeInfo
         }
 
 
+        private object get_0_PatientsPage_PatientList(object instance)
+        {
+            var that = (global::AdmissionsManager.View.PatientsPage)instance;
+            return that.PatientList;
+        }
 
         private global::Windows.UI.Xaml.Markup.IXamlMember CreateXamlMember(string longMemberName)
         {
             global::AdmissionsManager.AdmissionsManager_XamlTypeInfo.XamlMember xamlMember = null;
-            // No Local Properties
+            global::AdmissionsManager.AdmissionsManager_XamlTypeInfo.XamlUserType userType;
+
+            switch (longMemberName)
+            {
+            case "AdmissionsManager.View.PatientsPage.PatientList":
+                userType = (global::AdmissionsManager.AdmissionsManager_XamlTypeInfo.XamlUserType)GetXamlTypeByName("AdmissionsManager.View.PatientsPage");
+                xamlMember = new global::AdmissionsManager.AdmissionsManager_XamlTypeInfo.XamlMember(this, "PatientList", "System.Collections.ObjectModel.ObservableCollection`1<Object>");
+                xamlMember.Getter = get_0_PatientsPage_PatientList;
+                xamlMember.SetIsReadOnly();
+                break;
+            }
             return xamlMember;
         }
     }
