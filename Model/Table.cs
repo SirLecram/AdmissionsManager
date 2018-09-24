@@ -6,15 +6,9 @@ using System.Threading.Tasks;
 
 namespace AdmissionsManager.Model
 {
-    class Table
+    public abstract class Table
     {
-        public string TableName { get; protected set; }
-        public Tabels TableType { get; protected set; }
-
-        public Table(Tabels typeOfTable)
-        {
-            TableType = typeOfTable;
-            TableName = typeOfTable.ToString();
-        }
+        // TODO: Dodac table do klas modelu
+        public abstract string PrimaryKeyNameToSql { get; protected set; }
     }
 }

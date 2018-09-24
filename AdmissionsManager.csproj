@@ -108,6 +108,7 @@
     <Compile Include="Model\Surgery.cs" />
     <Compile Include="Model\Table.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SqlCommandCreator.cs" />
     <Compile Include="View\AdmissionsPage.xaml.cs">
       <DependentUpon>AdmissionsPage.xaml</DependentUpon>
     </Compile>

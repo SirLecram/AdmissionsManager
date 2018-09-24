@@ -19,7 +19,8 @@ namespace AdmissionsManager
         public readonly string ConnectionString = @"Data Source=MARCEL\SQLEXPRESS;Initial Catalog = DB_s439397; Integrated Security = true;";
         private ObservableCollection<object> _PatientList { get; set; }
         public ObservableCollection<object> PatientList { get => _PatientList; }
-        public SqlCommand Command { get; protected set; }
+        public string CommandText { get; protected set; }
+        private IDatabaseConnectable _ActualPage { get; set; }
         public Controller(Frame mainFrame)
         {
             MainFrame = mainFrame;
@@ -27,18 +28,21 @@ namespace AdmissionsManager
             MainFrame.Content = new AdmissionsPage(this);
         }
 
-        public void ChangeFrame(Tabels changeTo)
+        internal void ChangeFrame(Tabels changeTo)
         {
             
             switch (changeTo)
             {
                 case Tabels.Admissions:
                     MainFrame.Content = new AdmissionsPage(this);
+                    
                     break;
                 case Tabels.Patients:
                     PatientsPage page = new PatientsPage(this);
                     MainFrame.Content = page;
-                    ReadDataFromDatabase(page);
+                    _ActualPage = page;
+                    CommandText = SqlCommandFilterCreator.CreateCommand(_ActualPage);
+                    ReadDataFromDatabase();
                     break;
                 case Tabels.Doctors:
                     MainFrame.Content = new DoctorsPage(this);
@@ -55,10 +59,8 @@ namespace AdmissionsManager
                     break;
             }
         }
-        public async void ReadDataFromDatabase(IDatabaseConnectable sender)
+        public async void ReadDataFromDatabase()
         {
-            
-            string command = "SELECT * FROM Pacjenci";
 
             using (SqlConnection connection = new SqlConnection(ConnectionString))
             {
@@ -68,25 +70,14 @@ namespace AdmissionsManager
                     
                     using (SqlCommand cmd = connection.CreateCommand())
                     {
-                        switch (sender.GetModelType())
-                        {
-                            case Tabels.Admissions:
-                            case Tabels.Doctors:
-                            case Tabels.Diagnoses:
-                            case Tabels.Surgeries:
-                            case Tabels.Rooms:
-
-                                break;
-                            case Tabels.Patients:
-                                command = "SELECT * FROM Pacjenci";
-                                break;
-                        }
                         
-                        cmd.CommandText = command;
+                        cmd.CommandText = CommandText;
+                        // TODO: Dodac try (W razie jakby zapytanie bylo transact sql)
                         using (SqlDataReader reader = await cmd.ExecuteReaderAsync())
                         {
-                            int fieldCount = reader.FieldCount;
                             
+                            int fieldCount = reader.FieldCount;
+                            _PatientList.Clear();
                             while (await reader.ReadAsync())
                             {
                                 List<object> valueList = new List<object>();
@@ -94,36 +85,122 @@ namespace AdmissionsManager
                                 {
                                     valueList.Add(reader[i]);
                                 }
-                                /*switch(sender.GetTableLabel())
-                                {
-                                    case Tabels.Admissions:
-                                    case Tabels.Doctors:
-                                    case Tabels.Diagnoses:
-                                    case Tabels.Surgeries:
-                                    case Tabels.Rooms:
-
-                                        break;
-                                    case Tabels.Patients:
-
-                                        break;
-                                }*/
-                               /* string pesel = reader.GetString(0);
-                                string surname = reader.GetString(1);
-                                string name = reader.GetString(2);
-                                DateTime date = reader.GetDateTime(3);
-                                string state = reader[4] as string;*/
-
                                 
                                 object patient =  new Patient(valueList);
                                 //var patient = new Patient(pesel,surname,name,date,state,patientSex);
                                 _PatientList.Add(patient);
                             }
-                            
-                            
                         }
                     }
                 }
             }
+        }
+        public async Task<int> ExecuteTransactCommandOnDatabaseAsync(string commandText)
+        {
+            int rowsAffected = 0;
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            {
+                await connection.OpenAsync();
+                if (connection.State == ConnectionState.Open)
+                {
+                    // TODO: Dodac try w raiez jakby zapytanie bylo select itp;
+                    using (SqlCommand cmd = connection.CreateCommand())
+                    {
+                        cmd.CommandText = commandText;
+                        
+                        rowsAffected = cmd.ExecuteNonQuery();
+                    }
+                }
+            }
+            return rowsAffected;
+        }
+
+        public async Task<List<string>> GetColumnNamesFromTable()
+        {
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            {
+                await connection.OpenAsync();
+
+                using (SqlCommand command = connection.CreateCommand())
+                {
+                    command.CommandText = CommandText;
+                    using (SqlDataReader reader = await command.ExecuteReaderAsync())
+                    {
+                        int columnAmount = reader.FieldCount;
+                        List<string> columnNames = new List<string>();
+                        for (int i = 0; i < columnAmount; i++)
+                        {
+                            columnNames.Add(reader.GetName(i));
+                        }
+                        return columnNames;
+                    }
+                }
+            }
+        }
+        public void SortBy(string orderBy, SortCriteria sortCriterium)
+        {
+            CommandText = SqlCommandFilterCreator.CreateCommand(CommandText, orderBy, sortCriterium);
+            ReadDataFromDatabase();
+        }
+
+        public void SearchExpression(string searchIn, string searchedExpression,
+            string sortBy = null, SortCriteria sortCriterium = SortCriteria.Ascending)
+        {
+            CommandText = SqlCommandFilterCreator.CreateCommand(CommandText, searchIn, searchedExpression, sortBy, sortCriterium);
+            ReadDataFromDatabase();
+        }
+
+        public async void DeleteRecord(object objectToDelete, Tabels actualTable)
+        {
+            string primaryKey = null;
+            string primaryKeyName = null;
+            string commandText = null;
+            switch(actualTable)
+            {
+                // TODO: Uzupełnić Switch()
+                case Tabels.Admissions:
+
+                    break;
+                case Tabels.Patients:
+                    primaryKey = (objectToDelete as Patient).PeselNumber;
+                    primaryKeyName = (objectToDelete as Patient).PrimaryKeyNameToSql;
+                    
+                    break;
+                case Tabels.Doctors:
+
+                    break;
+                case Tabels.Diagnoses:
+
+                    break;
+                case Tabels.Surgeries:
+
+                    break;
+                case Tabels.Rooms:
+
+                    break;
+            }
+
+            if (int.TryParse(primaryKey, out int result))
+                commandText = SqlCommandFilterCreator.CreateDeleteCommand(actualTable, result, primaryKeyName);
+            else
+                commandText = SqlCommandFilterCreator.CreateDeleteCommand(actualTable, primaryKey, primaryKeyName);
+
+            int rowsAffected = await ExecuteTransactCommandOnDatabaseAsync(commandText);
+            await new MessageDialog("Usunięto " + rowsAffected.ToString() +
+                " rekordów z tabeli " + actualTable.GetTableDescription() + ".").ShowAsync();
+            ReadDataFromDatabase();
+        }
+        public void ResetCommand(string orderBy, SortCriteria sortCriterium)
+        {
+            CommandText = SqlCommandFilterCreator.ResetCommand(_ActualPage);
+            SortBy(orderBy, sortCriterium);
+        }
+
+        private bool CheckCenterTableContainsElement(Tabels primaryKeyTable, string primaryKey)
+        {
+            // TODO: Dokonczyc sprawdzanie czy usuwany element jest kluczem obcym i ewentualnie usunac
+            // rowniez skojarzony wpis w innej tabeli.
+            return true;
         }
     }
 }

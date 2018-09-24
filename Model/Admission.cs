@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace AdmissionsManager.Model
 {
-    class Admission : Table
+    class Admission
     {
 
-        public Admission() : base(Tabels.Admissions)
+        public Admission() 
         {
         }
     }

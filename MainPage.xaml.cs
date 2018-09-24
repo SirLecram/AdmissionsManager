@@ -20,9 +20,15 @@ namespace AdmissionsManager
 {
     /// <summary>
     /// Zrobione ostatnio:
+    /// GetColumnNamesFromTable() w controller - ładowanie wartosci do combobox; Sortowanie; SqlCommandFilterCreator; 
+    /// Wyszukiwanie w danej kolumnie po wyrażenaiach; Rozszerzenie enum GetDescription dla łatwiejszego dostępu do 
+    /// nazwy tabeli dla komendy SQL; Resetowanie wyszukiwania; 
+    /// 
+    /// Zrobione: 
     /// Puste klasy modelu; wstepnie model pacjenta; enum typ tabeli; strony; dzialanie commandbar; przelaczanie miedzy frame;
     /// ConnectionString i laczenie z baza; Konstruktory modelu Pacjent; Wyświetlanie calej tabeli przy przelaczeniu karty
     /// (Na razie tylk opacjent); Dodanie do pacjent page ListView i bindowanie danych; Interfejs IDatabaseConnectable dla Page!;
+    /// 
     /// 
     /// Do zrobienia: Pozostałe klasy page; przemyslenie w ktorym miejscu laczyc z baza; Postarac sie nie uzywac Modelu w View;
     /// Dodanie w kontrolerze na stałe parametrów zapytania (Lub np. wlasciwosc z obecnym page (IDatabaseConnectable)), ma to pomoc

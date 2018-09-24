@@ -1,25 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace AdmissionsManager.Model
 {
-    public class Patient
+    public class Patient : Table
     {
+        public override string PrimaryKeyNameToSql { get; protected set; }
         public string PeselNumber { get; protected set; }
         public string Surname { get; protected set; }
         public string Name { get; protected set; }
         public DateTime BirthDate { get; protected set; }
         public string PatientState { get; protected set; }
         public Sex PatientSex { get; protected set; }
-        public Patient()
+        public Patient() : base()
         {
-            
+            PrimaryKeyNameToSql = "PESEL";
         }
         public Patient(string pesel, string surname, string name, DateTime birthDate, string patientState,
-            Sex patientSex)
+            Sex patientSex) : base()
         {
             if (pesel.Length < 11 || pesel.Length > 11)
                 throw new FormatException("PESEL musi mieć 11 cyfr");
@@ -29,12 +31,13 @@ namespace AdmissionsManager.Model
             BirthDate = birthDate;
             PatientState = patientState;
             PatientSex = patientSex;
+            PrimaryKeyNameToSql = "PESEL";
         }
         /// <summary>
         /// List have to be in right order (pesel, surname, name, birth date, patient state, patient sex).
         /// </summary>
         /// <param name="listOfValues"></param>
-        public Patient(List<object> listOfValues)
+        public Patient(List<object> listOfValues) : base()
         {
             if (listOfValues[0].ToString().Length < 11 || listOfValues[0].ToString().Length > 11)
                 throw new FormatException("PESEL musi mieć 11 cyfr");
@@ -44,6 +47,7 @@ namespace AdmissionsManager.Model
             BirthDate = DateTime.Parse(listOfValues[3].ToString());
             PatientState = listOfValues[4].ToString();
             PatientSex = (Sex)Enum.Parse(typeof(Sex), listOfValues[5].ToString());
+            PrimaryKeyNameToSql = "PESEL";
         }
     }
 }

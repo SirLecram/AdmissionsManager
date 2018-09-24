@@ -32,4 +32,10 @@ namespace AdmissionsManager
     {
         K, M,
     }
+
+    public enum SortCriteria
+    {
+        Ascending,
+        Descending,
+    }
 }
