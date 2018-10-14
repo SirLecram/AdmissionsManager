@@ -25,8 +25,12 @@
         </Grid.ColumnDefinitions>
         <TextBlock Text="Pacjenci" HorizontalAlignment="Left" Margin="15, 5, 0, 0" FontSize="20"
                    VerticalAlignment="Top" Name="pageTitle" Grid.ColumnSpan="2"/>
-        <Button Content="Nowe przyjęcie" Margin="10, 0, 20, 0" HorizontalAlignment="Stretch" Grid.Row="1"/>
-        <Button Content="Usuń zaznaczone" Margin="10, 0, 20, 0" HorizontalAlignment="Stretch" Grid.Row="1" Grid.Column="1" Click="Button_Click"/>
+        <StackPanel Grid.Row="1" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Center">
+            <Button Content="Nowe przyjęcie" Margin="30, 0, 30, 0"  Grid.Row="1"/>
+            <Button Content="Usuń zaznaczone" Margin="30, 0, 30, 0"  Grid.Row="1" Grid.Column="1" Click="DeleteButton_Click"/>
+            <Button Content="Edytuj rekord" Margin="30, 0, 30, 0"  Grid.Row="1" Click="Button_Click_1"/>
+        </StackPanel>
+        
         <!-- </StackPanel> -->
 
         <Grid Grid.Row="1" Grid.Column="2" Grid.ColumnSpan="2" Grid.RowSpan="2" Margin="2">

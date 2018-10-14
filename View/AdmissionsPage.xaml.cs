@@ -20,13 +20,23 @@ namespace AdmissionsManager.View
     /// <summary>
     /// Pusta strona, która może być używana samodzielnie lub do której można nawigować wewnątrz ramki.
     /// </summary>
-    public sealed partial class AdmissionsPage : Page
+    public sealed partial class AdmissionsPage : Page, IDatabaseConnectable
     {
         private Controller DatabaseController;
         public AdmissionsPage(Controller dbController)
         {
             this.InitializeComponent();
             DatabaseController = dbController;
+        }
+
+        public void ConnectToDatabase()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Tabels GetModelType()
+        {
+            return Tabels.Admissions;
         }
     }
 }

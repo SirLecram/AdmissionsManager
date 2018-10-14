@@ -568,6 +568,9 @@
     <AppxPackagedFile Include="C:\Users\MarcelPC\Desktop\Na studia\Informatyka\C#\Ksiazka\AdmissionsManager\AdmissionsManager\bin\x86\Debug\View\DoctorsPage.xbf">
       <PackagePath>View\DoctorsPage.xbf</PackagePath>
     </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\MarcelPC\Desktop\Na studia\Informatyka\C#\Ksiazka\AdmissionsManager\AdmissionsManager\bin\x86\Debug\View\EditDialog.xbf">
+      <PackagePath>View\EditDialog.xbf</PackagePath>
+    </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\MarcelPC\Desktop\Na studia\Informatyka\C#\Ksiazka\AdmissionsManager\AdmissionsManager\bin\x86\Debug\View\HomePage.xbf">
       <PackagePath>View\HomePage.xbf</PackagePath>
     </AppxPackagedFile>

@@ -14,7 +14,7 @@ namespace AdmissionsManager
         /// </summary>
         [Description("Strona domowa")]
         Home = 0,
-        [Description("Przyjęcia")]
+        [Description("Przyjecia")]
         Admissions = 1,
         [Description("Pacjenci")]
         Patients,

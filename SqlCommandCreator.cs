@@ -74,11 +74,19 @@ namespace AdmissionsManager
             commandToReturn += " WHERE " + nameOfPrimaryKey + " = " + primaryKey;
             return commandToReturn;
         }
+        public static string CreateUpdateCommand(Tabels actualTable, string primaryKey, string nameOfPrimaryKey, 
+            List<string> fieldsToUpdate, List<string> valueToSet)
+        {
+            string commandToReturn = "UPDATE " + actualTable.GetTableDescription() + " SET " +
+                fieldsToUpdate[0] + "='" + valueToSet[0] + "' WHERE " + nameOfPrimaryKey + " = '" + primaryKey + "'";
+            return commandToReturn;
+        }
 
         public static string ResetCommand(IDatabaseConnectable actualTable)
         {
             return CreateCommand(actualTable);
         }
+
 
         #region Help methods
 

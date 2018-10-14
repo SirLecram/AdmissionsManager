@@ -12,6 +12,7 @@ MainPage.xbf
 View\AdmissionsPage.xbf
 View\DiagnosisPage.xbf
 View\DoctorsPage.xbf
+View\EditDialog.xbf
 View\HomePage.xbf
 View\PatientsPage.xbf
 View\RoomsPage.xbf

@@ -30,26 +30,27 @@ namespace AdmissionsManager
 
         internal void ChangeFrame(Tabels changeTo)
         {
-            
+
             switch (changeTo)
             {
                 case Tabels.Admissions:
                     MainFrame.Content = new AdmissionsPage(this);
-                    
+
                     break;
                 case Tabels.Patients:
                     PatientsPage page = new PatientsPage(this);
                     MainFrame.Content = page;
                     _ActualPage = page;
                     CommandText = SqlCommandFilterCreator.CreateCommand(_ActualPage);
-                    ReadDataFromDatabase();
+                    if((page as PatientsPage).IsConnectedToDb)
+                        ReadDataFromDatabase();
                     break;
                 case Tabels.Doctors:
                     MainFrame.Content = new DoctorsPage(this);
                     break;
                 case Tabels.Diagnoses:
                     MainFrame.Content = new DiagnosisPage(this);
-                
+
                     break;
                 case Tabels.Surgeries:
                     MainFrame.Content = new SurgeriesPage(this);
@@ -59,23 +60,33 @@ namespace AdmissionsManager
                     break;
             }
         }
+
+        #region Connection DB methods
+        // TODO: Dodac opis metody aby uzywac ja tylko gdy baza jest podlaczona
         public async void ReadDataFromDatabase()
         {
 
             using (SqlConnection connection = new SqlConnection(ConnectionString))
             {
-                await connection.OpenAsync();
-                if(connection.State == ConnectionState.Open)
+                try
                 {
-                    
+                    await connection.OpenAsync();
+                }
+                catch (Exception e)
+                {
+                    throw new Exception("Nie ma możliwości połączyć się z DB.");
+                }
+                if (connection.State == ConnectionState.Open)
+                {
+
                     using (SqlCommand cmd = connection.CreateCommand())
                     {
-                        
+
                         cmd.CommandText = CommandText;
                         // TODO: Dodac try (W razie jakby zapytanie bylo transact sql)
                         using (SqlDataReader reader = await cmd.ExecuteReaderAsync())
                         {
-                            
+
                             int fieldCount = reader.FieldCount;
                             _PatientList.Clear();
                             while (await reader.ReadAsync())
@@ -85,8 +96,8 @@ namespace AdmissionsManager
                                 {
                                     valueList.Add(reader[i]);
                                 }
-                                
-                                object patient =  new Patient(valueList);
+
+                                object patient = new Patient(valueList);
                                 //var patient = new Patient(pesel,surname,name,date,state,patientSex);
                                 _PatientList.Add(patient);
                             }
@@ -95,6 +106,7 @@ namespace AdmissionsManager
                 }
             }
         }
+        // TODO: Dodac opis metody aby uzywac ja tylko gdy baza jest podlaczona
         public async Task<int> ExecuteTransactCommandOnDatabaseAsync(string commandText)
         {
             int rowsAffected = 0;
@@ -107,13 +119,99 @@ namespace AdmissionsManager
                     using (SqlCommand cmd = connection.CreateCommand())
                     {
                         cmd.CommandText = commandText;
-                        
+
                         rowsAffected = cmd.ExecuteNonQuery();
                     }
                 }
             }
             return rowsAffected;
         }
+        #endregion
+
+        #region DB mangement methods
+
+        public async void DeleteRecordAsync(object objectToDelete, Tabels actualTable)
+        {
+            string primaryKey = null;
+            string primaryKeyName = null;
+            GetPrimaryKeyAndPrimaryKeyName(objectToDelete, out primaryKey, out primaryKeyName);
+            string commandText = null;
+            /*switch (actualTable)
+            {
+                // TODO: Uzupełnić Switch()
+                case Tabels.Admissions:
+
+                    break;
+                case Tabels.Patients:
+                    primaryKey = (objectToDelete as Patient).PeselNumber;
+                    primaryKeyName = (objectToDelete as Patient).PrimaryKeyNameToSql;
+
+                    break;
+                case Tabels.Doctors:
+
+                    break;
+                case Tabels.Diagnoses:
+
+                    break;
+                case Tabels.Surgeries:
+
+                    break;
+                case Tabels.Rooms:
+
+                    break;
+            }*/
+            bool isCommandToExecute = false;
+
+            if (!await CheckCenterTableContainsElement(primaryKey))
+            {
+                commandText = SqlCommandFilterCreator.CreateDeleteCommand(actualTable, primaryKey, primaryKeyName);
+                isCommandToExecute = true;
+            }
+
+            if (isCommandToExecute)
+            {
+                int rowsAffected = await ExecuteTransactCommandOnDatabaseAsync(commandText);
+                await new MessageDialog("Usunięto " + rowsAffected.ToString() +
+                    " rekordów z tabeli " + actualTable.GetTableDescription() + ".").ShowAsync();
+                ReadDataFromDatabase();
+            }
+            else
+            {
+                await new MessageDialog("Nie usunięto rekordów.").ShowAsync();
+            }
+
+        }
+
+        public async void EditRecordAsync(object objectToUpdate, string fieldToUpdate, string valueToUpdate)
+        {
+            GetPrimaryKeyAndPrimaryKeyName(objectToUpdate, out string primaryKey, out string primaryKeyName);
+            string command = SqlCommandFilterCreator.CreateUpdateCommand(_ActualPage.GetModelType(), primaryKey, primaryKeyName,
+                new List<string> { fieldToUpdate }, new List<string> { valueToUpdate });
+            int rowsAffected = await ExecuteTransactCommandOnDatabaseAsync(command);
+            await new MessageDialog("Zaktualizowano " + rowsAffected.ToString() +
+                " rekordów z tabeli " + _ActualPage.GetModelType().GetTableDescription() + ".").ShowAsync();
+            ReadDataFromDatabase();
+        }
+        #endregion
+
+        #region Filters and searching
+
+        public void SortBy(string orderBy, SortCriteria sortCriterium)
+        {
+            CommandText = SqlCommandFilterCreator.CreateCommand(CommandText, orderBy, sortCriterium);
+            ReadDataFromDatabase();
+        }
+
+        public void SearchExpression(string searchIn, string searchedExpression,
+            string sortBy = null, SortCriteria sortCriterium = SortCriteria.Ascending)
+        {
+            CommandText = SqlCommandFilterCreator.CreateCommand(CommandText, searchIn, searchedExpression, sortBy, sortCriterium);
+            ReadDataFromDatabase();
+        }
+
+        #endregion
+
+        #region DB info methods
 
         public async Task<List<string>> GetColumnNamesFromTable()
         {
@@ -131,40 +229,119 @@ namespace AdmissionsManager
                         for (int i = 0; i < columnAmount; i++)
                         {
                             columnNames.Add(reader.GetName(i));
+
                         }
                         return columnNames;
                     }
                 }
             }
         }
-        public void SortBy(string orderBy, SortCriteria sortCriterium)
+        private string GetForeignKeyNameFromAdmissionsTable()
         {
-            CommandText = SqlCommandFilterCreator.CreateCommand(CommandText, orderBy, sortCriterium);
-            ReadDataFromDatabase();
+            Tabels table = _ActualPage.GetModelType();
+            string stringToReturn = null;
+            switch (table)
+            {
+                case Tabels.Admissions:
+                    stringToReturn = null;
+                    break;
+                case Tabels.Patients:
+                    stringToReturn = "PESEL_pacjenta";
+                    break;
+                case Tabels.Doctors:
+                    stringToReturn = "Lekarz_prowadzacy";
+                    break;
+                case Tabels.Diagnoses:
+                    stringToReturn = "Symbol_diagnozy";
+                    break;
+                case Tabels.Surgeries:
+                    stringToReturn = "Planowana_operacja";
+
+                    break;
+                case Tabels.Rooms:
+                    stringToReturn = "Nr_sali";
+                    break;
+            }
+            return stringToReturn;
         }
 
-        public void SearchExpression(string searchIn, string searchedExpression,
-            string sortBy = null, SortCriteria sortCriterium = SortCriteria.Ascending)
+        #endregion
+
+        #region Help methods
+
+        private async Task<bool> CheckCenterTableContainsElement(string primaryKey)
         {
-            CommandText = SqlCommandFilterCreator.CreateCommand(CommandText, searchIn, searchedExpression, sortBy, sortCriterium);
-            ReadDataFromDatabase();
+            // TODO: Dokonczyc sprawdzanie czy usuwany element jest kluczem obcym i ewentualnie usunac
+            // rowniez skojarzony wpis w innej tabeli.
+            string sqlCommand = SqlCommandFilterCreator.CreateCommand(new AdmissionsPage(this), GetForeignKeyNameFromAdmissionsTable(),
+                primaryKey);
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            {
+                await connection.OpenAsync();
+                using (SqlCommand cmd = connection.CreateCommand())
+                {
+                    cmd.CommandText = sqlCommand;
+                    using (SqlDataReader reader = await cmd.ExecuteReaderAsync())
+                    {
+                        if (reader.HasRows)
+                        {
+                            IUICommand response = null;
+                            MessageDialog mDialog = new MessageDialog("W tabeli Przyjęcia znajduje się odwołanie do usuwanego rekordu." +
+                                    "Jeśli usuniesz ten rekord, wpis z tabeli Przyjęcia zostanie również usunięty. Czy nadal chcesz usunąć rekord?");
+                            mDialog.Commands.Add(new UICommand("Tak, usuń"));
+                            mDialog.Commands.Add(new UICommand("Nie, pozostaw rekord"));
+                            response = await mDialog.ShowAsync();
+
+                            if (response == mDialog.Commands.First())
+                            {
+                                string deleteCommand = SqlCommandFilterCreator.CreateDeleteCommand(Tabels.Admissions, primaryKey,
+                                    GetForeignKeyNameFromAdmissionsTable());
+                                int rowsAffected = await ExecuteTransactCommandOnDatabaseAsync(deleteCommand);
+                                if (rowsAffected == 0)
+                                {
+                                    throw new Exception("NIE USUNIETO REKORDU!");
+                                }
+                                return false;
+                            }
+                            return true;
+                        }
+
+                    }
+                }
+
+            }
+            return false;
+        }
+        private async Task<bool> CheckCenterTableContainsElement(int primaryKey)
+        {
+            string stringToSearch = primaryKey.ToString();
+            bool response = await CheckCenterTableContainsElement(stringToSearch);
+            return response;
         }
 
-        public async void DeleteRecord(object objectToDelete, Tabels actualTable)
+        public void ResetCommand(string orderBy, SortCriteria sortCriterium)
         {
-            string primaryKey = null;
-            string primaryKeyName = null;
-            string commandText = null;
-            switch(actualTable)
+            CommandText = SqlCommandFilterCreator.ResetCommand(_ActualPage);
+            SortBy(orderBy, sortCriterium);
+        }
+        
+        private void GetPrimaryKeyAndPrimaryKeyName(object objectToGetValues, out string primaryKey, out string primaryKeyName)
+        {
+
+            
+            Tabels actualTable = _ActualPage.GetModelType();
+            primaryKey = null;
+            primaryKeyName = null;
+            switch (actualTable)
             {
                 // TODO: Uzupełnić Switch()
                 case Tabels.Admissions:
 
                     break;
                 case Tabels.Patients:
-                    primaryKey = (objectToDelete as Patient).PeselNumber;
-                    primaryKeyName = (objectToDelete as Patient).PrimaryKeyNameToSql;
-                    
+                    primaryKey = (objectToGetValues as Patient).PeselNumber;
+                    primaryKeyName = (objectToGetValues as Patient).PrimaryKeyNameToSql;
+
                     break;
                 case Tabels.Doctors:
 
@@ -179,28 +356,8 @@ namespace AdmissionsManager
 
                     break;
             }
-
-            if (int.TryParse(primaryKey, out int result))
-                commandText = SqlCommandFilterCreator.CreateDeleteCommand(actualTable, result, primaryKeyName);
-            else
-                commandText = SqlCommandFilterCreator.CreateDeleteCommand(actualTable, primaryKey, primaryKeyName);
-
-            int rowsAffected = await ExecuteTransactCommandOnDatabaseAsync(commandText);
-            await new MessageDialog("Usunięto " + rowsAffected.ToString() +
-                " rekordów z tabeli " + actualTable.GetTableDescription() + ".").ShowAsync();
-            ReadDataFromDatabase();
         }
-        public void ResetCommand(string orderBy, SortCriteria sortCriterium)
-        {
-            CommandText = SqlCommandFilterCreator.ResetCommand(_ActualPage);
-            SortBy(orderBy, sortCriterium);
-        }
+        #endregion
 
-        private bool CheckCenterTableContainsElement(Tabels primaryKeyTable, string primaryKey)
-        {
-            // TODO: Dokonczyc sprawdzanie czy usuwany element jest kluczem obcym i ewentualnie usunac
-            // rowniez skojarzony wpis w innej tabeli.
-            return true;
-        }
     }
 }
