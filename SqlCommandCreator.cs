@@ -12,6 +12,13 @@ namespace AdmissionsManager
     static class SqlCommandFilterCreator
     {
         //Dziala!
+        /// <summary>
+        /// Creates a command string which show actual table and sort it.
+        /// </summary>
+        /// <param name="actualPage">Actual view</param>
+        /// <param name="orderBy">order by (optional)</param>
+        /// <param name="sortCriterium"></param>
+        /// <returns></returns>
         public static string CreateCommand(IDatabaseConnectable actualPage, string orderBy = null, 
             SortCriteria sortCriterium = SortCriteria.Ascending)
         {
@@ -77,9 +84,13 @@ namespace AdmissionsManager
         public static string CreateUpdateCommand(Tabels actualTable, string primaryKey, string nameOfPrimaryKey, 
             List<string> fieldsToUpdate, List<string> valueToSet)
         {
+           
             string commandToReturn = "UPDATE " + actualTable.GetTableDescription() + " SET " +
                 fieldsToUpdate[0] + "='" + valueToSet[0] + "' WHERE " + nameOfPrimaryKey + " = '" + primaryKey + "'";
+            if (commandToReturn.Contains(@"'NULL'"))
+                commandToReturn = commandToReturn.Replace(@"'NULL'", "NULL");
             return commandToReturn;
+
         }
 
         public static string ResetCommand(IDatabaseConnectable actualTable)

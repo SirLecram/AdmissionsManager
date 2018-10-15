@@ -1,7 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Roots >
   <Roots.RootTypes>
-    <RootType FullName="Windows.UI.Xaml.Application" />
+    <RootType FullName="Windows.UI.Xaml.Application">
+      <RootProperty Name="Resources" />
+    </RootType>
+    <RootType FullName="System.Double" />
     <RootType FullName="Windows.UI.Xaml.Controls.Page">
       <RootProperty Name="Background" />
       <RootProperty Name="MinWidth" />
@@ -124,11 +127,15 @@
       <RootProperty Name="Title" />
       <RootProperty Name="PrimaryButtonText" />
       <RootProperty Name="SecondaryButtonText" />
+      <RootProperty Name="CompositeMode" />
+      <RootProperty Name="DefaultButton" />
       <RootProperty Name="Content" />
       <RootEvent Name="PrimaryButtonClick" />
+      <RootEvent Name="SecondaryButtonClick" />
     </RootType>
     <RootType FullName="AdmissionsManager.View.EditDialog" />
     <RootType FullName="AdmissionsManager.View.HomePage" />
+    <RootType FullName="AdmissionsManager.View.NewDialog" />
     <RootType FullName="Windows.UI.Xaml.Controls.ScrollViewer">
       <RootMethod Name="GetVerticalScrollBarVisibility" />
       <RootMethod Name="SetVerticalScrollBarVisibility" />

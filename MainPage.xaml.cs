@@ -20,10 +20,11 @@ namespace AdmissionsManager
 {
     /// <summary>
     /// Zrobione ostatnio:
-    /// TO WYZEJ JUZ DODANE!
-    /// Ostatnio: Sprawdzanie czy rekord znajduje sie tabeli Przyjecia i usuwanie go jeesli uzytkownik tego sobie zyczy;
-    /// Informacja jesli nie udalo sie polaczyc z baza; Region w kontrolerze; Dodano EditDialog; Dodano wstępne edytowanie rekordów;
-    /// Dodano nowy przycisk do edycji rekordu
+    /// Rozbudowa EditDialog - dodatkowe ograniczenia, informacje o typie, formacie, dodano dodatkowe informacje;
+    /// Controller - nowa funkcja zwracajaca typy kolumn; Poprawa fukncjonowania edytowania pól; 
+    /// Obsluga SqlException w metodzie EditRecordAsync - informacja w razie błędnego formatu;
+    /// Dodano ContentDialog sluzacy do dodawania nowych rekordów; Dodano automatyczne generowanie wygladu ContentDialog do dodawania;
+    /// Dodano opisy do wprowadzanych wartosci przy tworzeniu nowego rekordu;
     /// 
     /// Zrobione: 
     /// Puste klasy modelu; wstepnie model pacjenta; enum typ tabeli; strony; dzialanie commandbar; przelaczanie miedzy frame;
@@ -32,6 +33,9 @@ namespace AdmissionsManager
     /// GetColumnNamesFromTable() w controller - ładowanie wartosci do combobox; Sortowanie; SqlCommandFilterCreator; 
     /// Wyszukiwanie w danej kolumnie po wyrażenaiach; Rozszerzenie enum GetDescription dla łatwiejszego dostępu do 
     /// nazwy tabeli dla komendy SQL; Resetowanie wyszukiwania; Usuwanie rekordów;
+    /// Sprawdzanie czy rekord znajduje sie tabeli Przyjecia i usuwanie go jeesli uzytkownik tego sobie zyczy;
+    /// Informacja jesli nie udalo sie polaczyc z baza; Region w kontrolerze; Dodano EditDialog; Dodano wstępne edytowanie rekordów;
+    /// Dodano nowy przycisk do edycji rekordu; Obsluga wyjatku w raize braku polaczenia z DB;
     /// 
     /// Do zrobienia: Pozostałe klasy page; przemyslenie w ktorym miejscu laczyc z baza; Postarac sie nie uzywac Modelu w View;
     /// Dodanie w kontrolerze na stałe parametrów zapytania (Lub np. wlasciwosc z obecnym page (IDatabaseConnectable)), ma to pomoc

@@ -61,7 +61,7 @@ namespace AdmissionsManager.View
                 if (connection.State == ConnectionState.Open)
                 {
                     pageTitle.Text = "Pacjenci (Connected)";
-                    List<string> comboBoxesList = await DatabaseController.GetColumnNamesFromTable();
+                    List<string> comboBoxesList = await DatabaseController.GetColumnNamesFromTableAsync();
                     lookInComboBox.ItemsSource = sortComboBox.ItemsSource = comboBoxesList;
                     lookInComboBox.SelectedIndex = sortComboBox.SelectedIndex = 0;
                     IsConnectedToDb = true;
@@ -115,11 +115,16 @@ namespace AdmissionsManager.View
         {
             Model.Patient patient = databaseView.SelectedItem as Model.Patient;
             string textToTitle = "Edytowany pacjent: " + patient.Name + " " + patient.Surname;
-            EditDialog dialog = new EditDialog(await DatabaseController.GetColumnNamesFromTable(), textToTitle);
-            await dialog.ShowAsync();
-            string result = dialog.Result;
-            string fieldToEdit = dialog.FieldToUpdate;
-            DatabaseController.EditRecordAsync(patient, fieldToEdit, result);
+            Dictionary<int, string> typesDictionary = await DatabaseController.GetColumnTypesAsync();
+            EditDialog dialog = new EditDialog(await DatabaseController.GetColumnNamesFromTableAsync(), typesDictionary, textToTitle);
+            ContentDialogResult dialogResult =  await dialog.ShowAsync();
+            if(dialogResult == ContentDialogResult.Primary && !string.IsNullOrEmpty(dialog.Result))
+            {
+                string result = dialog.Result;
+                string fieldToEdit = dialog.FieldToUpdate;
+                DatabaseController.EditRecordAsync(patient, fieldToEdit, result);
+            }
+            
             //string
         }
 
@@ -157,10 +162,19 @@ namespace AdmissionsManager.View
                 DeleteRecord();
         }
 
-        private async void Button_Click_1(object sender, RoutedEventArgs e)
+        private void EditButton_Click(object sender, RoutedEventArgs e)
         {
             if (databaseView.SelectedItem != null)
                 EditRecord();
+        }
+
+        private async void NewRecordButton_Click(object sender, RoutedEventArgs e)
+        {
+            var typesL = await DatabaseController.GetColumnTypesAsync();
+            List<string> typesList = typesL.Values.ToList();
+            NewDialog dialog = new NewDialog(await DatabaseController.GetColumnNamesFromTableAsync(),
+                typesList);
+            await dialog.ShowAsync();
         }
         /*private async void ReadValuesFromDatabase()
 {

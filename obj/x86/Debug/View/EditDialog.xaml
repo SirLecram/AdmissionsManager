@@ -7,25 +7,40 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
     Title="TITLE"
+    
     PrimaryButtonText="Potwierź"
                                                          
-    SecondaryButtonText="Anuluj">
+    SecondaryButtonText="Anuluj" CompositeMode="Inherit" DefaultButton="Secondary">
 
-    <Grid x:ConnectionId='2' Width="500" Name="grid">
+    <Grid x:ConnectionId='2' Width="650" Name="grid">
 
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
+            <ColumnDefinition Width="0.5*"/>
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition Height="30"/>
+        </Grid.RowDefinitions>
         <ComboBox x:ConnectionId='3' Name="fieldToEdit" HorizontalAlignment="Stretch" VerticalAlignment="Center"
-                  Margin="20" Grid.Row="0" />
-        <StackPanel Grid.Column="1" Orientation="Horizontal" Grid.Row="0">
-            <TextBox x:ConnectionId='4' Name="valueToUpdateTextBox" Width="170" VerticalAlignment="Center"  
-                 Grid.Column="1" Margin="20"/>
-            <Button x:ConnectionId='5' Content="+"                     />
+                  Margin="20" Grid.Row="0"                                                 />
+        <StackPanel Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center">
+            <TextBlock x:ConnectionId='7' Grid.Column="1" Name="additionalTypeInfo" Text="Typ: " HorizontalAlignment="Center" Foreground="#FFBD8989"
+                       Margin="0, 5, 0, 5" FontSize="12"/>
+            <TextBlock x:ConnectionId='8' Text="Format: " Name="additionalFormatInfo" HorizontalAlignment="Center" Foreground="#FFBD8989"
+                       Margin="0, 5, 0, 5" FontSize="12"/>
         </StackPanel>
         
-        
+        <StackPanel Grid.Column="2" Orientation="Horizontal" Grid.Row="0">
+            <TextBox x:ConnectionId='5' Name="valueToUpdateTextBox" Width="170" VerticalAlignment="Center"  
+                 Grid.Column="1" Margin="20" />
+            <Button x:ConnectionId='6' Content="+"                     />
+        </StackPanel>
+        <TextBlock x:ConnectionId='4' Grid.Row="1" Text="DODATKOWE INFO" Grid.ColumnSpan="3" HorizontalAlignment="Center" VerticalAlignment="Center"
+                   Foreground="Gray" Name="additionalFilterInfo"/>
+
+
     </Grid>
 </ContentDialog>
 

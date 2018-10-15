@@ -26,9 +26,9 @@
         <TextBlock x:ConnectionId='2' Text="Pacjenci" HorizontalAlignment="Left" Margin="15, 5, 0, 0" FontSize="20"
                    VerticalAlignment="Top" Name="pageTitle" Grid.ColumnSpan="2"/>
         <StackPanel Grid.Row="1" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Center">
-            <Button Content="Nowe przyjęcie" Margin="30, 0, 30, 0"  Grid.Row="1"/>
-            <Button x:ConnectionId='19' Content="Usuń zaznaczone" Margin="30, 0, 30, 0"  Grid.Row="1" Grid.Column="1"                           />
-            <Button x:ConnectionId='20' Content="Edytuj rekord" Margin="30, 0, 30, 0"  Grid.Row="1"                       />
+            <Button x:ConnectionId='19' Content="Nowe przyjęcie" Margin="30, 0, 30, 0"  Grid.Row="1"                              />
+            <Button x:ConnectionId='20' Content="Usuń zaznaczone" Margin="30, 0, 30, 0"  Grid.Row="1" Grid.Column="1"                           />
+            <Button x:ConnectionId='21' Content="Edytuj rekord" Margin="30, 0, 30, 0"  Grid.Row="1"                         />
         </StackPanel>
         
         <!-- </StackPanel> -->

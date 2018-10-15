@@ -89,6 +89,7 @@ namespace AdmissionsManager
 
                             int fieldCount = reader.FieldCount;
                             _PatientList.Clear();
+                            // TODO: Dodac try w razie blednej daty w wyszukiwaniu
                             while (await reader.ReadAsync())
                             {
                                 List<object> valueList = new List<object>();
@@ -187,7 +188,17 @@ namespace AdmissionsManager
             GetPrimaryKeyAndPrimaryKeyName(objectToUpdate, out string primaryKey, out string primaryKeyName);
             string command = SqlCommandFilterCreator.CreateUpdateCommand(_ActualPage.GetModelType(), primaryKey, primaryKeyName,
                 new List<string> { fieldToUpdate }, new List<string> { valueToUpdate });
-            int rowsAffected = await ExecuteTransactCommandOnDatabaseAsync(command);
+            
+            int rowsAffected = 0;
+            try
+            {
+                rowsAffected = await ExecuteTransactCommandOnDatabaseAsync(command);
+            }
+            catch(SqlException e)
+            {
+                await new MessageDialog(e.Message, "Błędny format danych").ShowAsync();
+            }
+            
             await new MessageDialog("Zaktualizowano " + rowsAffected.ToString() +
                 " rekordów z tabeli " + _ActualPage.GetModelType().GetTableDescription() + ".").ShowAsync();
             ReadDataFromDatabase();
@@ -213,7 +224,7 @@ namespace AdmissionsManager
 
         #region DB info methods
 
-        public async Task<List<string>> GetColumnNamesFromTable()
+        public async Task<List<string>> GetColumnNamesFromTableAsync()
         {
             using (SqlConnection connection = new SqlConnection(ConnectionString))
             {
@@ -234,6 +245,28 @@ namespace AdmissionsManager
                         return columnNames;
                     }
                 }
+            }
+        }
+        public async Task<Dictionary<int, string>> GetColumnTypesAsync()
+        {
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            {
+                await connection.OpenAsync();
+                using (SqlCommand command = connection.CreateCommand())
+                {
+                    command.CommandText = CommandText;
+                    using (SqlDataReader reader = await command.ExecuteReaderAsync())
+                    {
+                        int columnAmount = reader.FieldCount;
+                        Dictionary<int, string> typesDictionary = new Dictionary<int, string>();
+                        for(int i = 0; i < columnAmount; i++)
+                        {
+                            typesDictionary.Add(i, reader.GetDataTypeName(i));
+                        }
+                        return typesDictionary;
+                    }
+                }
+
             }
         }
         private string GetForeignKeyNameFromAdmissionsTable()

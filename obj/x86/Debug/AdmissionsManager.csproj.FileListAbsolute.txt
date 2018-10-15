@@ -332,3 +332,8 @@ C:\Users\MarcelPC\Desktop\Na studia\Informatyka\C#\Ksiazka\AdmissionsManager\Adm
 C:\Users\MarcelPC\Desktop\Na studia\Informatyka\C#\Ksiazka\AdmissionsManager\AdmissionsManager\obj\x86\Debug\View\EditDialog.g.cs
 C:\Users\MarcelPC\Desktop\Na studia\Informatyka\C#\Ksiazka\AdmissionsManager\AdmissionsManager\obj\x86\Debug\View\EditDialog.xaml
 C:\Users\MarcelPC\Desktop\Na studia\Informatyka\C#\Ksiazka\AdmissionsManager\AdmissionsManager\obj\x86\Debug\View\EditDialog.xbf
+C:\Users\MarcelPC\Desktop\Na studia\Informatyka\C#\Ksiazka\AdmissionsManager\AdmissionsManager\bin\x86\Debug\View\NewDialog.xbf
+C:\Users\MarcelPC\Desktop\Na studia\Informatyka\C#\Ksiazka\AdmissionsManager\AdmissionsManager\obj\x86\Debug\View\NewDialog.g.i.cs
+C:\Users\MarcelPC\Desktop\Na studia\Informatyka\C#\Ksiazka\AdmissionsManager\AdmissionsManager\obj\x86\Debug\View\NewDialog.g.cs
+C:\Users\MarcelPC\Desktop\Na studia\Informatyka\C#\Ksiazka\AdmissionsManager\AdmissionsManager\obj\x86\Debug\View\NewDialog.xaml
+C:\Users\MarcelPC\Desktop\Na studia\Informatyka\C#\Ksiazka\AdmissionsManager\AdmissionsManager\obj\x86\Debug\View\NewDialog.xbf

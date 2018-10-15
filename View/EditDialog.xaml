@@ -7,24 +7,39 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
     Title="TITLE"
+    
     PrimaryButtonText="Potwierź"
     PrimaryButtonClick="ContentDialog_PrimaryButtonClick"
-    SecondaryButtonText="Anuluj">
+    SecondaryButtonText="Anuluj" CompositeMode="Inherit" DefaultButton="Secondary">
 
-    <Grid Width="500" Name="grid">
+    <Grid Width="650" Name="grid">
 
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
+            <ColumnDefinition Width="0.5*"/>
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition Height="30"/>
+        </Grid.RowDefinitions>
         <ComboBox Name="fieldToEdit" HorizontalAlignment="Stretch" VerticalAlignment="Center"
-                  Margin="20" Grid.Row="0" />
-        <StackPanel Grid.Column="1" Orientation="Horizontal" Grid.Row="0">
-            <TextBox Name="valueToUpdateTextBox" Width="170" VerticalAlignment="Center"  
-                 Grid.Column="1" Margin="20"/>
-            <Button Content="+" Click="Button_Click"/>
+                  Margin="20" Grid.Row="0" SelectionChanged="FieldToEdit_SelectionChanged" />
+        <StackPanel Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center">
+            <TextBlock Grid.Column="1" Name="additionalTypeInfo" Text="Typ: " HorizontalAlignment="Center" Foreground="#FFBD8989"
+                       Margin="0, 5, 0, 5" FontSize="12"/>
+            <TextBlock Text="Format: " Name="additionalFormatInfo" HorizontalAlignment="Center" Foreground="#FFBD8989"
+                       Margin="0, 5, 0, 5" FontSize="12"/>
         </StackPanel>
         
-        
+        <StackPanel Grid.Column="2" Orientation="Horizontal" Grid.Row="0">
+            <TextBox Name="valueToUpdateTextBox" Width="170" VerticalAlignment="Center"  
+                 Grid.Column="1" Margin="20" />
+            <Button Content="+" Click="Button_Click"/>
+        </StackPanel>
+        <TextBlock Grid.Row="1" Text="DODATKOWE INFO" Grid.ColumnSpan="3" HorizontalAlignment="Center" VerticalAlignment="Center"
+                   Foreground="Gray" Name="additionalFilterInfo"/>
+
+
     </Grid>
 </ContentDialog>
