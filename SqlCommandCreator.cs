@@ -92,6 +92,35 @@ namespace AdmissionsManager
             return commandToReturn;
 
         }
+        public static string CreateNewRecordCommand(Tabels actualTable, List<object> valuesList, List<string> columnNames)
+        {
+            string commandToReturn = "INSERT INTO " + actualTable.GetTableDescription() + " (";
+            string lastColumn = columnNames.Last();
+            string lastValue = valuesList.Last().ToString();
+            foreach(string column in columnNames)
+            {
+                commandToReturn += column;
+                if (column == lastColumn)
+                    commandToReturn += ") VALUES (";
+                else
+                    commandToReturn += ", ";
+            }
+            foreach(object value in valuesList)
+            {
+                if (value.ToString() == "NULL")
+                    commandToReturn += value.ToString();
+                else
+                    commandToReturn += "'" + value.ToString() + "'";
+
+                if (value.ToString() == lastValue)
+                    commandToReturn += ")";
+                else
+                    commandToReturn += ", ";
+
+            }
+            return commandToReturn;
+            
+        }
 
         public static string ResetCommand(IDatabaseConnectable actualTable)
         {
@@ -174,6 +203,31 @@ namespace AdmissionsManager
                 ? default(DescriptionAttribute)
                 : enumMember.GetCustomAttribute(typeof(DescriptionAttribute)) as DescriptionAttribute;
             return descriptionAttribute.Description;
+        }
+        public static T GetEnumFromDescription<T>(this string description)
+        {
+            // Found in: https://stackoverflow.com/questions/4367723/get-enum-from-description-attribute
+
+            var type = typeof(T);
+            if (!type.IsEnum)
+                throw new InvalidOperationException();
+            foreach (var field in type.GetFields())
+            {
+                DescriptionAttribute attribute = Attribute.GetCustomAttribute(field,
+                    typeof(DescriptionAttribute)) as DescriptionAttribute;
+                if (attribute != null)
+                {
+                    if (attribute.Description == description)
+                        return (T)field.GetValue(null);
+                }
+                else
+                {
+                    if (field.Name == description)
+                        return (T)field.GetValue(null);
+                }
+            }
+            throw new ArgumentException("Not found.", "description");
+
         }
 
         #endregion

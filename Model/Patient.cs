@@ -39,6 +39,7 @@ namespace AdmissionsManager.Model
         /// <param name="listOfValues"></param>
         public Patient(List<object> listOfValues) : base()
         {
+            // TODO: Dodać zabezpieczenia dla pozostałych wartosci
             if (listOfValues[0].ToString().Length < 11 || listOfValues[0].ToString().Length > 11)
                 throw new FormatException("PESEL musi mieć 11 cyfr");
             PeselNumber = listOfValues[0].ToString();

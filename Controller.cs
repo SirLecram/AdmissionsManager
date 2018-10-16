@@ -198,11 +198,30 @@ namespace AdmissionsManager
             {
                 await new MessageDialog(e.Message, "Błędny format danych").ShowAsync();
             }
-            
+            ReadDataFromDatabase();
             await new MessageDialog("Zaktualizowano " + rowsAffected.ToString() +
                 " rekordów z tabeli " + _ActualPage.GetModelType().GetTableDescription() + ".").ShowAsync();
-            ReadDataFromDatabase();
+            
         }
+        public async void AddNewRecord(List<object> valuesList)
+        {
+
+            string command = SqlCommandFilterCreator.CreateNewRecordCommand(_ActualPage.GetModelType(),
+                valuesList, await GetColumnNamesFromTableAsync());
+            int rowsAffected = 0;
+            try
+            {
+                rowsAffected = await ExecuteTransactCommandOnDatabaseAsync(command);
+            }
+            catch(SqlException e)
+            {
+                await new MessageDialog(e.Message, "Błędny format danych!").ShowAsync();
+            }
+            ReadDataFromDatabase();
+            await new MessageDialog("Dodano " + rowsAffected.ToString() +
+                " rekordów do tabeli " + _ActualPage.GetModelType().GetTableDescription() + ".").ShowAsync();
+        }
+        
         #endregion
 
         #region Filters and searching
@@ -295,6 +314,7 @@ namespace AdmissionsManager
                     stringToReturn = "Nr_sali";
                     break;
             }
+            
             return stringToReturn;
         }
 
@@ -390,6 +410,7 @@ namespace AdmissionsManager
                     break;
             }
         }
+
         #endregion
 
     }

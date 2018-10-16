@@ -127,6 +127,17 @@ namespace AdmissionsManager.View
             
             //string
         }
+        public async void NewRecord()
+        {
+            Dictionary<int, string> typesDictionary = await DatabaseController.GetColumnTypesAsync();
+            NewDialog createDialog = new NewDialog(await DatabaseController.GetColumnNamesFromTableAsync(), typesDictionary);
+            ContentDialogResult dialogResult = await createDialog.ShowAsync();
+            if(dialogResult == ContentDialogResult.Primary && createDialog.ValuesOfNewObject.Any())
+            {
+                List<object> valuesList = createDialog.ValuesOfNewObject;
+                DatabaseController.AddNewRecord(valuesList);
+            }
+        }
 
 
         private void SortComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -168,13 +179,9 @@ namespace AdmissionsManager.View
                 EditRecord();
         }
 
-        private async void NewRecordButton_Click(object sender, RoutedEventArgs e)
+        private void NewRecordButton_Click(object sender, RoutedEventArgs e)
         {
-            var typesL = await DatabaseController.GetColumnTypesAsync();
-            List<string> typesList = typesL.Values.ToList();
-            NewDialog dialog = new NewDialog(await DatabaseController.GetColumnNamesFromTableAsync(),
-                typesList);
-            await dialog.ShowAsync();
+            NewRecord();
         }
         /*private async void ReadValuesFromDatabase()
 {

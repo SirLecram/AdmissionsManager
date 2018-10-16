@@ -28,6 +28,35 @@ namespace AdmissionsManager
         Rooms,
     }
 
+    public enum AcademicDegrees
+    {
+        [Description("lek. rez.")]
+        LekRez,
+        [Description("lek. med.")]
+        LekMed,
+        [Description("lek. spec.")]
+        LekSpec,
+        [Description("dr")]
+        Dr,
+        [Description("dr hab.")]
+        DrHab,
+        [Description("prof.")]
+        Prof,
+    }
+    public enum MedicalSpecializations
+    {
+        [Description("Chirurgia ogólna"]
+        GeneralSurgery,
+        [Description("Chirurgia klatki piersiowej"]
+        ThoracicSurgery,
+        [Description("Chirurgia sercowo - naczyniowa"]
+        CardiovascuralSurgery,
+        [Description("Chirurgia układu nerwowego")]
+	'C', 'Urologia', 'Chirurgia szczękowo - twarzowa', 'Chirurgia urazowa' 
+    }
+
+
+
     public enum Sex
     {
         K, M,

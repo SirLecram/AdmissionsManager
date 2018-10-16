@@ -20,11 +20,9 @@ namespace AdmissionsManager
 {
     /// <summary>
     /// Zrobione ostatnio:
-    /// Rozbudowa EditDialog - dodatkowe ograniczenia, informacje o typie, formacie, dodano dodatkowe informacje;
-    /// Controller - nowa funkcja zwracajaca typy kolumn; Poprawa fukncjonowania edytowania pól; 
-    /// Obsluga SqlException w metodzie EditRecordAsync - informacja w razie błędnego formatu;
-    /// Dodano ContentDialog sluzacy do dodawania nowych rekordów; Dodano automatyczne generowanie wygladu ContentDialog do dodawania;
-    /// Dodano opisy do wprowadzanych wartosci przy tworzeniu nowego rekordu;
+    /// Do NewDialog zostało dodane sprawdzanie czy wzystkie pola są wypełnione; Anulowanie zamykania w razie pozostawienia pustych pól;
+    /// Dodano textblock z alertem; Dodanie mechanizmu działania dialoga; Additional security and data validation; 
+    /// Dodawanie nowego pacjenta w pełni działa; Enum AcademicDegrees, ; Wstepnie model Doctor
     /// 
     /// Zrobione: 
     /// Puste klasy modelu; wstepnie model pacjenta; enum typ tabeli; strony; dzialanie commandbar; przelaczanie miedzy frame;
@@ -36,6 +34,11 @@ namespace AdmissionsManager
     /// Sprawdzanie czy rekord znajduje sie tabeli Przyjecia i usuwanie go jeesli uzytkownik tego sobie zyczy;
     /// Informacja jesli nie udalo sie polaczyc z baza; Region w kontrolerze; Dodano EditDialog; Dodano wstępne edytowanie rekordów;
     /// Dodano nowy przycisk do edycji rekordu; Obsluga wyjatku w raize braku polaczenia z DB;
+    /// Rozbudowa EditDialog - dodatkowe ograniczenia, informacje o typie, formacie, dodano dodatkowe informacje;
+    /// Controller - nowa funkcja zwracajaca typy kolumn; Poprawa fukncjonowania edytowania pól; 
+    /// Obsluga SqlException w metodzie EditRecordAsync - informacja w razie błędnego formatu;
+    /// Dodano ContentDialog sluzacy do dodawania nowych rekordów; Dodano automatyczne generowanie wygladu ContentDialog do dodawania;
+    /// Dodano opisy do wprowadzanych wartosci przy tworzeniu nowego rekordu;
     /// 
     /// Do zrobienia: Pozostałe klasy page; przemyslenie w ktorym miejscu laczyc z baza; Postarac sie nie uzywac Modelu w View;
     /// Dodanie w kontrolerze na stałe parametrów zapytania (Lub np. wlasciwosc z obecnym page (IDatabaseConnectable)), ma to pomoc

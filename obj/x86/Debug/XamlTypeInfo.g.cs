@@ -189,7 +189,7 @@ namespace AdmissionsManager.AdmissionsManager_XamlTypeInfo
 
         private void InitTypeTables()
         {
-            _typeNameTable = new string[19];
+            _typeNameTable = new string[20];
             _typeNameTable[0] = "AdmissionsManager.MainPage";
             _typeNameTable[1] = "Windows.UI.Xaml.Controls.Page";
             _typeNameTable[2] = "Windows.UI.Xaml.Controls.UserControl";
@@ -202,15 +202,16 @@ namespace AdmissionsManager.AdmissionsManager_XamlTypeInfo
             _typeNameTable[9] = "String";
             _typeNameTable[10] = "AdmissionsManager.View.HomePage";
             _typeNameTable[11] = "AdmissionsManager.View.NewDialog";
-            _typeNameTable[12] = "AdmissionsManager.View.PatientsPage";
-            _typeNameTable[13] = "System.Collections.ObjectModel.ObservableCollection`1<Object>";
-            _typeNameTable[14] = "System.Collections.ObjectModel.Collection`1<Object>";
-            _typeNameTable[15] = "Object";
-            _typeNameTable[16] = "Boolean";
-            _typeNameTable[17] = "AdmissionsManager.View.RoomsPage";
-            _typeNameTable[18] = "AdmissionsManager.View.SurgeriesPage";
+            _typeNameTable[12] = "System.Collections.Generic.List`1<Object>";
+            _typeNameTable[13] = "Object";
+            _typeNameTable[14] = "AdmissionsManager.View.PatientsPage";
+            _typeNameTable[15] = "System.Collections.ObjectModel.ObservableCollection`1<Object>";
+            _typeNameTable[16] = "System.Collections.ObjectModel.Collection`1<Object>";
+            _typeNameTable[17] = "Boolean";
+            _typeNameTable[18] = "AdmissionsManager.View.RoomsPage";
+            _typeNameTable[19] = "AdmissionsManager.View.SurgeriesPage";
 
-            _typeTable = new global::System.Type[19];
+            _typeTable = new global::System.Type[20];
             _typeTable[0] = typeof(global::AdmissionsManager.MainPage);
             _typeTable[1] = typeof(global::Windows.UI.Xaml.Controls.Page);
             _typeTable[2] = typeof(global::Windows.UI.Xaml.Controls.UserControl);
@@ -223,13 +224,14 @@ namespace AdmissionsManager.AdmissionsManager_XamlTypeInfo
             _typeTable[9] = typeof(global::System.String);
             _typeTable[10] = typeof(global::AdmissionsManager.View.HomePage);
             _typeTable[11] = typeof(global::AdmissionsManager.View.NewDialog);
-            _typeTable[12] = typeof(global::AdmissionsManager.View.PatientsPage);
-            _typeTable[13] = typeof(global::System.Collections.ObjectModel.ObservableCollection<global::System.Object>);
-            _typeTable[14] = typeof(global::System.Collections.ObjectModel.Collection<global::System.Object>);
-            _typeTable[15] = typeof(global::System.Object);
-            _typeTable[16] = typeof(global::System.Boolean);
-            _typeTable[17] = typeof(global::AdmissionsManager.View.RoomsPage);
-            _typeTable[18] = typeof(global::AdmissionsManager.View.SurgeriesPage);
+            _typeTable[12] = typeof(global::System.Collections.Generic.List<global::System.Object>);
+            _typeTable[13] = typeof(global::System.Object);
+            _typeTable[14] = typeof(global::AdmissionsManager.View.PatientsPage);
+            _typeTable[15] = typeof(global::System.Collections.ObjectModel.ObservableCollection<global::System.Object>);
+            _typeTable[16] = typeof(global::System.Collections.ObjectModel.Collection<global::System.Object>);
+            _typeTable[17] = typeof(global::System.Boolean);
+            _typeTable[18] = typeof(global::AdmissionsManager.View.RoomsPage);
+            _typeTable[19] = typeof(global::AdmissionsManager.View.SurgeriesPage);
         }
 
         private int LookupTypeIndexByName(string typeName)
@@ -265,15 +267,22 @@ namespace AdmissionsManager.AdmissionsManager_XamlTypeInfo
         }
 
         private object Activate_0_MainPage() { return new global::AdmissionsManager.MainPage(); }
-        private object Activate_13_ObservableCollection() { return new global::System.Collections.ObjectModel.ObservableCollection<global::System.Object>(); }
-        private object Activate_14_Collection() { return new global::System.Collections.ObjectModel.Collection<global::System.Object>(); }
-        private void VectorAdd_13_ObservableCollection(object instance, object item)
+        private object Activate_12_List() { return new global::System.Collections.Generic.List<global::System.Object>(); }
+        private object Activate_15_ObservableCollection() { return new global::System.Collections.ObjectModel.ObservableCollection<global::System.Object>(); }
+        private object Activate_16_Collection() { return new global::System.Collections.ObjectModel.Collection<global::System.Object>(); }
+        private void VectorAdd_12_List(object instance, object item)
         {
             var collection = (global::System.Collections.Generic.ICollection<global::System.Object>)instance;
             var newItem = (global::System.Object)item;
             collection.Add(newItem);
         }
-        private void VectorAdd_14_Collection(object instance, object item)
+        private void VectorAdd_15_ObservableCollection(object instance, object item)
+        {
+            var collection = (global::System.Collections.Generic.ICollection<global::System.Object>)instance;
+            var newItem = (global::System.Object)item;
+            collection.Add(newItem);
+        }
+        private void VectorAdd_16_Collection(object instance, object item)
         {
             var collection = (global::System.Collections.Generic.ICollection<global::System.Object>)instance;
             var newItem = (global::System.Object)item;
@@ -351,11 +360,23 @@ namespace AdmissionsManager.AdmissionsManager_XamlTypeInfo
 
             case 11:   //  AdmissionsManager.View.NewDialog
                 userType = new global::AdmissionsManager.AdmissionsManager_XamlTypeInfo.XamlUserType(this, typeName, type, GetXamlTypeByName("Windows.UI.Xaml.Controls.ContentDialog"));
+                userType.AddMemberName("ValuesOfNewObject");
                 userType.SetIsLocalType();
                 xamlType = userType;
                 break;
 
-            case 12:   //  AdmissionsManager.View.PatientsPage
+            case 12:   //  System.Collections.Generic.List`1<Object>
+                userType = new global::AdmissionsManager.AdmissionsManager_XamlTypeInfo.XamlUserType(this, typeName, type, GetXamlTypeByName("Object"));
+                userType.CollectionAdd = VectorAdd_12_List;
+                userType.SetIsReturnTypeStub();
+                xamlType = userType;
+                break;
+
+            case 13:   //  Object
+                xamlType = new global::AdmissionsManager.AdmissionsManager_XamlTypeInfo.XamlSystemBaseType(typeName, type);
+                break;
+
+            case 14:   //  AdmissionsManager.View.PatientsPage
                 userType = new global::AdmissionsManager.AdmissionsManager_XamlTypeInfo.XamlUserType(this, typeName, type, GetXamlTypeByName("Windows.UI.Xaml.Controls.Page"));
                 userType.AddMemberName("PatientList");
                 userType.AddMemberName("IsConnectedToDb");
@@ -363,35 +384,31 @@ namespace AdmissionsManager.AdmissionsManager_XamlTypeInfo
                 xamlType = userType;
                 break;
 
-            case 13:   //  System.Collections.ObjectModel.ObservableCollection`1<Object>
+            case 15:   //  System.Collections.ObjectModel.ObservableCollection`1<Object>
                 userType = new global::AdmissionsManager.AdmissionsManager_XamlTypeInfo.XamlUserType(this, typeName, type, GetXamlTypeByName("System.Collections.ObjectModel.Collection`1<Object>"));
-                userType.CollectionAdd = VectorAdd_13_ObservableCollection;
+                userType.CollectionAdd = VectorAdd_15_ObservableCollection;
                 userType.SetIsReturnTypeStub();
                 xamlType = userType;
                 break;
 
-            case 14:   //  System.Collections.ObjectModel.Collection`1<Object>
+            case 16:   //  System.Collections.ObjectModel.Collection`1<Object>
                 userType = new global::AdmissionsManager.AdmissionsManager_XamlTypeInfo.XamlUserType(this, typeName, type, GetXamlTypeByName("Object"));
-                userType.Activator = Activate_14_Collection;
-                userType.CollectionAdd = VectorAdd_14_Collection;
+                userType.Activator = Activate_16_Collection;
+                userType.CollectionAdd = VectorAdd_16_Collection;
                 xamlType = userType;
                 break;
 
-            case 15:   //  Object
+            case 17:   //  Boolean
                 xamlType = new global::AdmissionsManager.AdmissionsManager_XamlTypeInfo.XamlSystemBaseType(typeName, type);
                 break;
 
-            case 16:   //  Boolean
-                xamlType = new global::AdmissionsManager.AdmissionsManager_XamlTypeInfo.XamlSystemBaseType(typeName, type);
-                break;
-
-            case 17:   //  AdmissionsManager.View.RoomsPage
+            case 18:   //  AdmissionsManager.View.RoomsPage
                 userType = new global::AdmissionsManager.AdmissionsManager_XamlTypeInfo.XamlUserType(this, typeName, type, GetXamlTypeByName("Windows.UI.Xaml.Controls.Page"));
                 userType.SetIsLocalType();
                 xamlType = userType;
                 break;
 
-            case 18:   //  AdmissionsManager.View.SurgeriesPage
+            case 19:   //  AdmissionsManager.View.SurgeriesPage
                 userType = new global::AdmissionsManager.AdmissionsManager_XamlTypeInfo.XamlUserType(this, typeName, type, GetXamlTypeByName("Windows.UI.Xaml.Controls.Page"));
                 userType.SetIsLocalType();
                 xamlType = userType;
@@ -411,12 +428,17 @@ namespace AdmissionsManager.AdmissionsManager_XamlTypeInfo
             var that = (global::AdmissionsManager.View.EditDialog)instance;
             return that.FieldToUpdate;
         }
-        private object get_2_PatientsPage_PatientList(object instance)
+        private object get_2_NewDialog_ValuesOfNewObject(object instance)
+        {
+            var that = (global::AdmissionsManager.View.NewDialog)instance;
+            return that.ValuesOfNewObject;
+        }
+        private object get_3_PatientsPage_PatientList(object instance)
         {
             var that = (global::AdmissionsManager.View.PatientsPage)instance;
             return that.PatientList;
         }
-        private object get_3_PatientsPage_IsConnectedToDb(object instance)
+        private object get_4_PatientsPage_IsConnectedToDb(object instance)
         {
             var that = (global::AdmissionsManager.View.PatientsPage)instance;
             return that.IsConnectedToDb;
@@ -441,16 +463,22 @@ namespace AdmissionsManager.AdmissionsManager_XamlTypeInfo
                 xamlMember.Getter = get_1_EditDialog_FieldToUpdate;
                 xamlMember.SetIsReadOnly();
                 break;
+            case "AdmissionsManager.View.NewDialog.ValuesOfNewObject":
+                userType = (global::AdmissionsManager.AdmissionsManager_XamlTypeInfo.XamlUserType)GetXamlTypeByName("AdmissionsManager.View.NewDialog");
+                xamlMember = new global::AdmissionsManager.AdmissionsManager_XamlTypeInfo.XamlMember(this, "ValuesOfNewObject", "System.Collections.Generic.List`1<Object>");
+                xamlMember.Getter = get_2_NewDialog_ValuesOfNewObject;
+                xamlMember.SetIsReadOnly();
+                break;
             case "AdmissionsManager.View.PatientsPage.PatientList":
                 userType = (global::AdmissionsManager.AdmissionsManager_XamlTypeInfo.XamlUserType)GetXamlTypeByName("AdmissionsManager.View.PatientsPage");
                 xamlMember = new global::AdmissionsManager.AdmissionsManager_XamlTypeInfo.XamlMember(this, "PatientList", "System.Collections.ObjectModel.ObservableCollection`1<Object>");
-                xamlMember.Getter = get_2_PatientsPage_PatientList;
+                xamlMember.Getter = get_3_PatientsPage_PatientList;
                 xamlMember.SetIsReadOnly();
                 break;
             case "AdmissionsManager.View.PatientsPage.IsConnectedToDb":
                 userType = (global::AdmissionsManager.AdmissionsManager_XamlTypeInfo.XamlUserType)GetXamlTypeByName("AdmissionsManager.View.PatientsPage");
                 xamlMember = new global::AdmissionsManager.AdmissionsManager_XamlTypeInfo.XamlMember(this, "IsConnectedToDb", "Boolean");
-                xamlMember.Getter = get_3_PatientsPage_IsConnectedToDb;
+                xamlMember.Getter = get_4_PatientsPage_IsConnectedToDb;
                 xamlMember.SetIsReadOnly();
                 break;
             }
