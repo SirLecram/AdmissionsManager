@@ -45,21 +45,61 @@ namespace AdmissionsManager
     }
     public enum MedicalSpecializations
     {
-        [Description("Chirurgia ogólna"]
+        [Description("Chirurgia ogólna")]
         GeneralSurgery,
-        [Description("Chirurgia klatki piersiowej"]
+        [Description("Chirurgia klatki piersiowej")]
         ThoracicSurgery,
-        [Description("Chirurgia sercowo - naczyniowa"]
+        [Description("Chirurgia sercowo - naczyniowa")]
         CardiovascuralSurgery,
         [Description("Chirurgia układu nerwowego")]
-	'C', 'Urologia', 'Chirurgia szczękowo - twarzowa', 'Chirurgia urazowa' 
+        NewvousSurgery,
+        [Description("Urologia")]
+        Urology,
+        [Description("Chirurgia szczękowo - twarzowa")]
+        MaxillofacialSurgery,
+        [Description("Chirurgia urazowa")]
+        AccidentSurgery,
     }
-
+    public enum JobPositions
+    {
+        
+        [Description("Lekarz ogólny")]
+        GeneralPracticioner,
+        [Description("Lekarz prowadzący")]
+        AttendingPhysician,
+        [Description("Zastępca kierownika")]
+        ViceManager,
+        [Description("Kierownik")]
+        Manager,
+        [Description("Ordynator")]
+        Director,
+    }
+    public enum PatientState
+    {
+        [Description("KRYTYCZNY")]
+        Critical,
+        [Description("STABILNY")]
+        Stable,
+        [Description("ZAGROŻONY")]
+        Endangered,
+        [Description("NULL")]
+        None,
+    }
 
 
     public enum Sex
     {
-        K, M,
+        [Description("K")]
+        K,
+        [Description("M")]
+        M,
+    }
+
+    public enum EnumTypes
+    {
+        // TODO: Uzupelnic enum gdy juz beda wszystkie tabele;
+        [Description("Plec")]
+        Sex,
     }
 
     public enum SortCriteria

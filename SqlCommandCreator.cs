@@ -24,15 +24,21 @@ namespace AdmissionsManager
         {
             Tabels actualTable = actualPage.GetModelType();
 
+            string commandToReturn = CreateCommand(actualTable, orderBy, sortCriterium);
+            return commandToReturn;
+        }
+        public static string CreateCommand(Tabels actualTable, string orderBy = null,
+            SortCriteria sortCriterium = SortCriteria.Ascending)
+        {
+            
             string commandToReturn = "SELECT * FROM ";
-            commandToReturn += actualTable.GetTableDescription();
-            if(!string.IsNullOrEmpty(orderBy))
+            commandToReturn += actualTable.GetEnumDescription();
+            if (!string.IsNullOrEmpty(orderBy))
             {
                 commandToReturn = CreateCommand(commandToReturn, orderBy, sortCriterium);
             }
             return commandToReturn;
         }
-
         public static string CreateCommand(string actualCommandToOrder, string orderBy,
             SortCriteria sortCriterium = SortCriteria.Ascending)
         {
@@ -69,7 +75,7 @@ namespace AdmissionsManager
         {
             
             string commandToReturn = "DELETE FROM ";
-            commandToReturn += actualTable.GetTableDescription();
+            commandToReturn += actualTable.GetEnumDescription();
             commandToReturn += " WHERE " + nameOfPrimaryKey + " = '" + primaryKey + "'";
             return commandToReturn;
         }
@@ -77,7 +83,7 @@ namespace AdmissionsManager
         {
 
             string commandToReturn = "DELETE FROM ";
-            commandToReturn += actualTable.GetTableDescription();
+            commandToReturn += actualTable.GetEnumDescription();
             commandToReturn += " WHERE " + nameOfPrimaryKey + " = " + primaryKey;
             return commandToReturn;
         }
@@ -85,18 +91,18 @@ namespace AdmissionsManager
             List<string> fieldsToUpdate, List<string> valueToSet)
         {
            
-            string commandToReturn = "UPDATE " + actualTable.GetTableDescription() + " SET " +
+            string commandToReturn = "UPDATE " + actualTable.GetEnumDescription() + " SET " +
                 fieldsToUpdate[0] + "='" + valueToSet[0] + "' WHERE " + nameOfPrimaryKey + " = '" + primaryKey + "'";
             if (commandToReturn.Contains(@"'NULL'"))
                 commandToReturn = commandToReturn.Replace(@"'NULL'", "NULL");
             return commandToReturn;
 
         }
-        public static string CreateNewRecordCommand(Tabels actualTable, List<object> valuesList, List<string> columnNames)
+        public static string CreateNewRecordCommand(Tabels actualTable, List<string> valuesList, List<string> columnNames)
         {
-            string commandToReturn = "INSERT INTO " + actualTable.GetTableDescription() + " (";
+            string commandToReturn = "INSERT INTO " + actualTable.GetEnumDescription() + " (";
             string lastColumn = columnNames.Last();
-            string lastValue = valuesList.Last().ToString();
+            string lastValue = valuesList.Last();
             foreach(string column in columnNames)
             {
                 commandToReturn += column;
@@ -108,9 +114,9 @@ namespace AdmissionsManager
             foreach(object value in valuesList)
             {
                 if (value.ToString() == "NULL")
-                    commandToReturn += value.ToString();
+                    commandToReturn += value;
                 else
-                    commandToReturn += "'" + value.ToString() + "'";
+                    commandToReturn += "'" + value + "'";
 
                 if (value.ToString() == lastValue)
                     commandToReturn += ")";
@@ -123,6 +129,10 @@ namespace AdmissionsManager
         }
 
         public static string ResetCommand(IDatabaseConnectable actualTable)
+        {
+            return CreateCommand(actualTable);
+        }
+        public static string ResetCommand(Tabels actualTable)
         {
             return CreateCommand(actualTable);
         }
@@ -194,7 +204,7 @@ namespace AdmissionsManager
 
         #region Extensions
 
-        public static string GetTableDescription(this Enum e)
+        public static string GetEnumDescription(this Enum e)
         {
             // DescriptionAttribute.GetCustomAttributes(e.GetType().GetMember(()))
             var enumMember = e.GetType().GetMember(e.ToString()).FirstOrDefault();
@@ -229,7 +239,7 @@ namespace AdmissionsManager
             throw new ArgumentException("Not found.", "description");
 
         }
-
+        
         #endregion
 
     }

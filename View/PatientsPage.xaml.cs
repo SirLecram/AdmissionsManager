@@ -28,9 +28,10 @@ namespace AdmissionsManager.View
     public sealed partial class PatientsPage : Page, IDatabaseConnectable
     {
         private Controller DatabaseController;
-        public ObservableCollection<object> PatientList { get => DatabaseController.PatientList; }
+        public ObservableCollection<object> RecordsList { get => DatabaseController.RecordsList; }
         private Tabels TableOfPage { get; }
-        public bool IsConnectedToDb { get; private set; }
+        private bool _IsConnectedToDb { get; set; }
+        public bool IsConnectedToDb { get => _IsConnectedToDb; }
         
 
         public PatientsPage(Controller dbController)
@@ -38,13 +39,13 @@ namespace AdmissionsManager.View
             this.InitializeComponent();
             pageTitle.Text = "Pacjenci (Connecting to database...)";
             DatabaseController = dbController;
-            IsConnectedToDb = false;
+            _IsConnectedToDb = false;
             ConnectToDatabase();
             TableOfPage = Tabels.Patients;
             
-            databaseView.ItemsSource = PatientList;
+            databaseView.ItemsSource = RecordsList;
         }
-        private async void ConnectToDatabase()
+        public async void ConnectToDatabase()
         {
             using (SqlConnection connection = new SqlConnection(DatabaseController.ConnectionString))
             { 
@@ -64,20 +65,20 @@ namespace AdmissionsManager.View
                     List<string> comboBoxesList = await DatabaseController.GetColumnNamesFromTableAsync();
                     lookInComboBox.ItemsSource = sortComboBox.ItemsSource = comboBoxesList;
                     lookInComboBox.SelectedIndex = sortComboBox.SelectedIndex = 0;
-                    IsConnectedToDb = true;
+                    _IsConnectedToDb = true;
                 }
                 else
                 {
                     pageTitle.Text = "Pacjenci (Can't connect to database)";
-                    IsConnectedToDb = false;
+                    _IsConnectedToDb = false;
                 }
             }
         }
         
-        void IDatabaseConnectable.ConnectToDatabase()
+       /* void IDatabaseConnectable.ConnectToDatabase()
         {
             ConnectToDatabase();
-        }
+        }*/
 
         public Tabels GetModelType()
         {
@@ -111,7 +112,7 @@ namespace AdmissionsManager.View
             
             DatabaseController.DeleteRecordAsync(patient, GetModelType());
         }
-        public async void EditRecord()
+        private async void EditRecord()
         {
             Model.Patient patient = databaseView.SelectedItem as Model.Patient;
             string textToTitle = "Edytowany pacjent: " + patient.Name + " " + patient.Surname;
@@ -127,14 +128,14 @@ namespace AdmissionsManager.View
             
             //string
         }
-        public async void NewRecord()
+        private async void NewRecord()
         {
             Dictionary<int, string> typesDictionary = await DatabaseController.GetColumnTypesAsync();
             NewDialog createDialog = new NewDialog(await DatabaseController.GetColumnNamesFromTableAsync(), typesDictionary);
             ContentDialogResult dialogResult = await createDialog.ShowAsync();
             if(dialogResult == ContentDialogResult.Primary && createDialog.ValuesOfNewObject.Any())
             {
-                List<object> valuesList = createDialog.ValuesOfNewObject;
+                List<string> valuesList = createDialog.ValuesOfNewObject;
                 DatabaseController.AddNewRecord(valuesList);
             }
         }

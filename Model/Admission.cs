@@ -14,5 +14,7 @@ namespace AdmissionsManager.Model
         }
 
         public override string PrimaryKeyNameToSql { get => throw new NotImplementedException(); protected set => throw new NotImplementedException(); }
+
+        public override string GetPrimaryKey => throw new NotImplementedException();
     }
 }

@@ -26,18 +26,19 @@
         <ComboBox x:ConnectionId='3' Name="fieldToEdit" HorizontalAlignment="Stretch" VerticalAlignment="Center"
                   Margin="20" Grid.Row="0"                                                 />
         <StackPanel Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center">
-            <TextBlock x:ConnectionId='7' Grid.Column="1" Name="additionalTypeInfo" Text="Typ: " HorizontalAlignment="Center" Foreground="#FFBD8989"
+            <TextBlock x:ConnectionId='6' Grid.Column="1" Name="additionalTypeInfo" Text="Typ: " HorizontalAlignment="Center" Foreground="#FFBD8989"
                        Margin="0, 5, 0, 5" FontSize="12"/>
-            <TextBlock x:ConnectionId='8' Text="Format: " Name="additionalFormatInfo" HorizontalAlignment="Center" Foreground="#FFBD8989"
+            <TextBlock x:ConnectionId='7' Text="Format: " Name="additionalFormatInfo" HorizontalAlignment="Center" Foreground="#FFBD8989"
                        Margin="0, 5, 0, 5" FontSize="12"/>
         </StackPanel>
         
-        <StackPanel Grid.Column="2" Orientation="Horizontal" Grid.Row="0">
-            <TextBox x:ConnectionId='5' Name="valueToUpdateTextBox" Width="170" VerticalAlignment="Center"  
-                 Grid.Column="1" Margin="20" />
-            <Button x:ConnectionId='6' Content="+"                     />
+        <StackPanel x:ConnectionId='4' Grid.Column="2" Orientation="Horizontal" Grid.Row="0" Name="firstValueStackPanel">
+          <!--  <TextBox Name="valueToUpdateTextBox" Width="170" VerticalAlignment="Center"  
+                 Grid.Column="1" Margin="20" /> 
+            
+            <Button Content="+" Click="Button_Click"/> -->
         </StackPanel>
-        <TextBlock x:ConnectionId='4' Grid.Row="1" Text="DODATKOWE INFO" Grid.ColumnSpan="3" HorizontalAlignment="Center" VerticalAlignment="Center"
+        <TextBlock x:ConnectionId='5' Grid.Row="1" Text="DODATKOWE INFO" Grid.ColumnSpan="3" HorizontalAlignment="Center" VerticalAlignment="Center"
                    Foreground="Gray" Name="additionalFilterInfo"/>
 
 

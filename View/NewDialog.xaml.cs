@@ -20,16 +20,18 @@ namespace AdmissionsManager.View
     public sealed partial class NewDialog : ContentDialog
     {
         private Dictionary<int, TextBlock> textBlocksDictionary = new Dictionary<int, TextBlock>();
-        private Dictionary<int, TextBox> textBoxesDictionary = new Dictionary<int, TextBox>();
+        private Dictionary<int, Control> dataControlsDictionary = new Dictionary<int, Control>();
+        private Dictionary<string, Type> enumTypes;
         private TextBlock AlertText = new TextBlock();
         private IEnumerable<string> neededValues;
-        public List<object> ValuesOfNewObject { get; private set; }
+        public List<string> ValuesOfNewObject { get; private set; }
 
         public NewDialog(IEnumerable<string> namesOfColumn, IDictionary<int, string> typesOfColumn)
         {
             this.InitializeComponent();
             this.neededValues = namesOfColumn;
-            ValuesOfNewObject = new List<object>();
+            ValuesOfNewObject = new List<string>();
+            enumTypes = CreateEnumTypesDictionary();
             CreateInterface(namesOfColumn, typesOfColumn);
 
         }
@@ -45,19 +47,7 @@ namespace AdmissionsManager.View
             foreach(string value in namesList)
             {
                 int rowIndex = namesList.FindIndex(x => x == value);
-                grid.RowDefinitions.Add(new RowDefinition());
-                TextBlock newTextBlock = new TextBlock();
-                TextBox newTextBox = new TextBox();
-                grid.Children.Add(newTextBlock);
-                grid.Children.Add(newTextBox);
-                Grid.SetColumn(newTextBox, 1);
-                newTextBlock.Width = newTextBox.Width = 120;
-                newTextBlock.Text = value;
-                Grid.SetRow(newTextBox, rowIndex);
-                Grid.SetRow(newTextBlock, rowIndex);
-                textBlocksDictionary.Add(rowIndex, newTextBlock);
-                textBoxesDictionary.Add(rowIndex, newTextBox);
-
+                Control control = new TextBox();
                 TextBlock descriptionTextBlock = new TextBlock();
                 descriptionTextBlock.HorizontalAlignment = HorizontalAlignment.Center;
                 descriptionTextBlock.VerticalAlignment = VerticalAlignment.Center;
@@ -67,45 +57,87 @@ namespace AdmissionsManager.View
                 descriptionTextBlock.FontSize = 12;
                 grid.Children.Add(descriptionTextBlock);
                 Grid.SetRow(descriptionTextBlock, rowIndex);
-
                 // TODO: Dopisac pozostałe wyjatki dla pozostalych widokow
                 if (typesOfColumn[rowIndex] == "date")
                     descriptionTextBlock.Text = "Format: RRRR-MM-DD";
                 else if (value == "PESEL")
                     descriptionTextBlock.Text = "Format: 11 cyfr";
-                else if (value == "Stan")
-                    descriptionTextBlock.Text = "Możliwości: 'KRYTYCZNY', 'STABILNY', 'ZAGROŻONY', 'NULL'";
-                else if (value == "Plec")
-                    descriptionTextBlock.Text = "Możliwości: 'M', 'K'";
+                else if (enumTypes.Keys.ToList().Contains(value)) // TODO: Dodac pozostale kolumny z enum
+                {
+                    ComboBox cBox = new ComboBox();
+                    Type type = enumTypes[value];
+                    List<string> list = new List<string>(Enum.GetNames(enumTypes[value]).ToList());
+                    List<string> descriptionsList = new List<string>();
+                    foreach (string x in list)
+                    {
+                        var enumX = Enum.Parse(type, x);
+                        descriptionsList.Add((enumX as Enum).GetEnumDescription());
+                        
+                    }
+
+                    cBox.ItemsSource = descriptionsList; 
+                    cBox.SelectedIndex = 0;
+                    control = cBox;
+                    descriptionTextBlock.Text = "Brak dodatkowych warunków";
+                }  
                 else
                     descriptionTextBlock.Text = "Brak dodatkowych warunków";
 
-                
+                grid.RowDefinitions.Add(new RowDefinition());
+                TextBlock newTextBlock = new TextBlock();
+                TextBox newTextBox = new TextBox();
+                grid.Children.Add(newTextBlock);
+                grid.Children.Add(control);
+                Grid.SetColumn(control, 1);
+                newTextBlock.Width = control.Width = 140;
+                newTextBlock.Text = value;
+                Grid.SetRow(control, rowIndex);
+                Grid.SetRow(newTextBlock, rowIndex);
+                textBlocksDictionary.Add(rowIndex, newTextBlock);
+                dataControlsDictionary.Add(rowIndex, control);
+
+  
             }
             grid.Children.Add(AlertText);
             grid.RowDefinitions.Add(new RowDefinition());
             Grid.SetRow(AlertText, grid.RowDefinitions.Count - 1);
             Grid.SetColumnSpan(AlertText, 3);
         }
+        private Dictionary<string, Type> CreateEnumTypesDictionary()
+        {
+            // TODO: Uzupełniać w miare dodawania tabel!
+            Dictionary<string, Type> newDictionary = new Dictionary<string, Type>();
+            newDictionary.Add("Plec", typeof(Sex));
+            newDictionary.Add("Stan", typeof(PatientState));
+            newDictionary.Add("Stopien_naukowy", typeof(AcademicDegrees));
+            newDictionary.Add("Specjalizacja", typeof(MedicalSpecializations));
+            newDictionary.Add("Stanowisko", typeof(JobPositions));
+            return newDictionary;
+        }
         private bool CheckDialogIsFilled()
         {
             bool response = true;
-            foreach(TextBox box in textBoxesDictionary.Values)
+            foreach(Control control in dataControlsDictionary.Values)
             {
-                if (string.IsNullOrEmpty(box.Text))
+                if(control is TextBox)
                 {
-                    response = false;
-                    break;
+                    if (string.IsNullOrEmpty((control as TextBox).Text))
+                    {
+                        response = false;
+                        break;
+                    }
                 }
+                
                     
             }
             if(textBlocksDictionary[0].Text == "PESEL")
             {
-                int peselLength = textBoxesDictionary[0].Text.Length;
+                TextBox textBoxToCheck = (dataControlsDictionary[0] as TextBox);
+                int peselLength = textBoxToCheck.Text.Length;
                 if (peselLength != 11)
                 {
                     response = false;
-                    textBoxesDictionary[0].Text = string.Empty;
+                    textBoxToCheck.Text = string.Empty;
                 }
                     
             }
@@ -114,9 +146,12 @@ namespace AdmissionsManager.View
         }
         private void StoreData()
         {
-            foreach (TextBox box in textBoxesDictionary.Values)
+            foreach (Control control in dataControlsDictionary.Values)
             {
-                ValuesOfNewObject.Add(box.Text);
+                if (control is TextBox)
+                    ValuesOfNewObject.Add((control as TextBox).Text);
+                else
+                    ValuesOfNewObject.Add((control as ComboBox).SelectedItem as string);
             }
             
         }

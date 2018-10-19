@@ -10,5 +10,6 @@ namespace AdmissionsManager.Model
     {
         // TODO: Dodac table do klas modelu
         public abstract string PrimaryKeyNameToSql { get; protected set; }
+        public abstract string GetPrimaryKey { get; }
     }
 }

@@ -20,9 +20,14 @@ namespace AdmissionsManager
 {
     /// <summary>
     /// Zrobione ostatnio:
-    /// Do NewDialog zostało dodane sprawdzanie czy wzystkie pola są wypełnione; Anulowanie zamykania w razie pozostawienia pustych pól;
-    /// Dodano textblock z alertem; Dodanie mechanizmu działania dialoga; Additional security and data validation; 
-    /// Dodawanie nowego pacjenta w pełni działa; Enum AcademicDegrees, ; Wstepnie model Doctor
+    /// Rozbudowa modelu Doctor; Kolejne enumy: EnumTypes, JobPositions, MedicalSpecializations;
+    /// Do dialogu umożliwiającego tworzenie nowych rekordów dodano  wstępne renderowanie ComboBox zamiast 
+    /// TextBox w przypadku wartości reprezentowanych w kodzie przez enum oraz potrzebne właściwości;
+    /// Dodano prywatne wlasciwosci do modelu przy wlasciwosciach Enum (Do bindowania);
+    /// Wstępnie działa widok i model Doctor; Poprawiono błędy związane z przełączaniem się między kartami; 
+    /// Widok i model lekarze działa sprawnie ( do testów); Przerobione niektóre metody aby były bardziej uniwersalne 
+    /// i zeby można je było stosowac to wszystkich widoków i modeli (np. GetPrimaryKeyAndPrimaryKeyName);
+    /// 
     /// 
     /// Zrobione: 
     /// Puste klasy modelu; wstepnie model pacjenta; enum typ tabeli; strony; dzialanie commandbar; przelaczanie miedzy frame;
@@ -39,10 +44,15 @@ namespace AdmissionsManager
     /// Obsluga SqlException w metodzie EditRecordAsync - informacja w razie błędnego formatu;
     /// Dodano ContentDialog sluzacy do dodawania nowych rekordów; Dodano automatyczne generowanie wygladu ContentDialog do dodawania;
     /// Dodano opisy do wprowadzanych wartosci przy tworzeniu nowego rekordu;
+    /// Do NewDialog zostało dodane sprawdzanie czy wzystkie pola są wypełnione; Anulowanie zamykania w razie pozostawienia pustych pól;
+    /// Dodano textblock z alertem; Dodanie mechanizmu działania dialoga; Additional security and data validation; 
+    /// Dodawanie nowego pacjenta w pełni działa; Enum AcademicDegrees, ; Wstepnie model Doctor; Rozszerzenie string GetEnumFromDescription;
     /// 
     /// Do zrobienia: Pozostałe klasy page; przemyslenie w ktorym miejscu laczyc z baza; Postarac sie nie uzywac Modelu w View;
     /// Dodanie w kontrolerze na stałe parametrów zapytania (Lub np. wlasciwosc z obecnym page (IDatabaseConnectable)), ma to pomoc
     /// w budowaniu zapytan; Moze dodanie klas odpowiedzialnych za czesc zapytania z wyszukiwaniem i filtrami ?
+    /// MOZE Wlasciwosci odpowiedzialne za Wyswietlanie combobox w newDialog wrzucic do Controller i uzywac ich w dialogach 
+    /// oraz widokach?
     /// </summary>
     public sealed partial class MainPage : Page
     {

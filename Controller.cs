@@ -17,48 +17,65 @@ namespace AdmissionsManager
     {
         private readonly Frame MainFrame;
         public readonly string ConnectionString = @"Data Source=MARCEL\SQLEXPRESS;Initial Catalog = DB_s439397; Integrated Security = true;";
-        private ObservableCollection<object> _PatientList { get; set; }
-        public ObservableCollection<object> PatientList { get => _PatientList; }
+        private ObservableCollection<object> _RecordsList { get; set; }
+        public ObservableCollection<object> RecordsList { get => _RecordsList; }
         public string CommandText { get; protected set; }
         private IDatabaseConnectable _ActualPage { get; set; }
         public Controller(Frame mainFrame)
         {
             MainFrame = mainFrame;
-            _PatientList = new ObservableCollection<object>();
+            _RecordsList = new ObservableCollection<object>();
             MainFrame.Content = new AdmissionsPage(this);
         }
 
         internal void ChangeFrame(Tabels changeTo)
         {
-
+            CommandText = SqlCommandFilterCreator.ResetCommand(changeTo);
+            _RecordsList.Clear();
+            // TODO: UZUPELNIC W PRZYPADKU DODAWANIA KOLEJNYCH MODELI I WIDOKOW
+            IDatabaseConnectable page;
             switch (changeTo)
             {
                 case Tabels.Admissions:
-                    MainFrame.Content = new AdmissionsPage(this);
+                    page = new AdmissionsPage(this);
+                    MainFrame.Content = page;
 
                     break;
                 case Tabels.Patients:
-                    PatientsPage page = new PatientsPage(this);
+                    
+                    page = new PatientsPage(this);
                     MainFrame.Content = page;
                     _ActualPage = page;
                     CommandText = SqlCommandFilterCreator.CreateCommand(_ActualPage);
-                    if((page as PatientsPage).IsConnectedToDb)
+                    if ((page as IDatabaseConnectable).IsConnectedToDb)
                         ReadDataFromDatabase();
                     break;
                 case Tabels.Doctors:
-                    MainFrame.Content = new DoctorsPage(this);
+                    page = new DoctorsPage(this);
+                    MainFrame.Content = page;
+                    _ActualPage = page;
+                    CommandText = SqlCommandFilterCreator.CreateCommand(_ActualPage);
+                    if ((page as IDatabaseConnectable).IsConnectedToDb)
+                        ReadDataFromDatabase();
                     break;
                 case Tabels.Diagnoses:
-                    MainFrame.Content = new DiagnosisPage(this);
+                    page = new AdmissionsPage(this);
+                    MainFrame.Content = page;
 
                     break;
                 case Tabels.Surgeries:
-                    MainFrame.Content = new SurgeriesPage(this);
+                    page = new AdmissionsPage(this);
+                    MainFrame.Content = page;
                     break;
                 case Tabels.Rooms:
-                    MainFrame.Content = new RoomsPage(this);
+                    page = new AdmissionsPage(this);
+                    MainFrame.Content = page;
+                    break;
+                default:
+                    page = new PatientsPage(this);
                     break;
             }
+            
         }
 
         #region Connection DB methods
@@ -88,19 +105,44 @@ namespace AdmissionsManager
                         {
 
                             int fieldCount = reader.FieldCount;
-                            _PatientList.Clear();
+                            _RecordsList.Clear();
                             // TODO: Dodac try w razie blednej daty w wyszukiwaniu
                             while (await reader.ReadAsync())
                             {
-                                List<object> valueList = new List<object>();
+                                List<string> valueList = new List<string>();
                                 for (int i = 0; i < fieldCount; i++)
                                 {
-                                    valueList.Add(reader[i]);
+                                    if (String.IsNullOrEmpty(reader[i].ToString()))
+                                        valueList.Add("NULL");
+                                    else
+                                        valueList.Add(reader[i].ToString());
                                 }
+                                object model = null;
+                                switch(_ActualPage.GetModelType())
+                                {
+                                    case Tabels.Admissions:
+                                        model = new Patient(valueList);
+                                        break;
+                                    case Tabels.Patients:
+                                        model = new Patient(valueList);
+                                        break;
+                                    case Tabels.Doctors:
+                                        model = new Doctor(valueList);
+                                        break;
+                                    case Tabels.Diagnoses:
+                                        model = new Doctor(valueList);
+                                        break;
+                                    case Tabels.Surgeries:
+                                        model = new Doctor(valueList);
 
-                                object patient = new Patient(valueList);
+                                        break;
+                                    case Tabels.Rooms:
+                                        model = new Doctor(valueList);
+                                        break;
+                                }
+                                
                                 //var patient = new Patient(pesel,surname,name,date,state,patientSex);
-                                _PatientList.Add(patient);
+                                _RecordsList.Add(model);
                             }
                         }
                     }
@@ -135,32 +177,8 @@ namespace AdmissionsManager
         {
             string primaryKey = null;
             string primaryKeyName = null;
-            GetPrimaryKeyAndPrimaryKeyName(objectToDelete, out primaryKey, out primaryKeyName);
+            GetPrimaryKeyAndPrimaryKeyName(objectToDelete as Table, out primaryKey, out primaryKeyName);
             string commandText = null;
-            /*switch (actualTable)
-            {
-                // TODO: Uzupełnić Switch()
-                case Tabels.Admissions:
-
-                    break;
-                case Tabels.Patients:
-                    primaryKey = (objectToDelete as Patient).PeselNumber;
-                    primaryKeyName = (objectToDelete as Patient).PrimaryKeyNameToSql;
-
-                    break;
-                case Tabels.Doctors:
-
-                    break;
-                case Tabels.Diagnoses:
-
-                    break;
-                case Tabels.Surgeries:
-
-                    break;
-                case Tabels.Rooms:
-
-                    break;
-            }*/
             bool isCommandToExecute = false;
 
             if (!await CheckCenterTableContainsElement(primaryKey))
@@ -173,7 +191,7 @@ namespace AdmissionsManager
             {
                 int rowsAffected = await ExecuteTransactCommandOnDatabaseAsync(commandText);
                 await new MessageDialog("Usunięto " + rowsAffected.ToString() +
-                    " rekordów z tabeli " + actualTable.GetTableDescription() + ".").ShowAsync();
+                    " rekordów z tabeli " + actualTable.GetEnumDescription() + ".").ShowAsync();
                 ReadDataFromDatabase();
             }
             else
@@ -185,7 +203,7 @@ namespace AdmissionsManager
 
         public async void EditRecordAsync(object objectToUpdate, string fieldToUpdate, string valueToUpdate)
         {
-            GetPrimaryKeyAndPrimaryKeyName(objectToUpdate, out string primaryKey, out string primaryKeyName);
+            GetPrimaryKeyAndPrimaryKeyName(objectToUpdate as Table, out string primaryKey, out string primaryKeyName);
             string command = SqlCommandFilterCreator.CreateUpdateCommand(_ActualPage.GetModelType(), primaryKey, primaryKeyName,
                 new List<string> { fieldToUpdate }, new List<string> { valueToUpdate });
             
@@ -200,10 +218,10 @@ namespace AdmissionsManager
             }
             ReadDataFromDatabase();
             await new MessageDialog("Zaktualizowano " + rowsAffected.ToString() +
-                " rekordów z tabeli " + _ActualPage.GetModelType().GetTableDescription() + ".").ShowAsync();
+                " rekordów z tabeli " + _ActualPage.GetModelType().GetEnumDescription() + ".").ShowAsync();
             
         }
-        public async void AddNewRecord(List<object> valuesList)
+        public async void AddNewRecord(List<string> valuesList)
         {
 
             string command = SqlCommandFilterCreator.CreateNewRecordCommand(_ActualPage.GetModelType(),
@@ -219,7 +237,7 @@ namespace AdmissionsManager
             }
             ReadDataFromDatabase();
             await new MessageDialog("Dodano " + rowsAffected.ToString() +
-                " rekordów do tabeli " + _ActualPage.GetModelType().GetTableDescription() + ".").ShowAsync();
+                " rekordów do tabeli " + _ActualPage.GetModelType().GetEnumDescription() + ".").ShowAsync();
         }
         
         #endregion
@@ -324,8 +342,6 @@ namespace AdmissionsManager
 
         private async Task<bool> CheckCenterTableContainsElement(string primaryKey)
         {
-            // TODO: Dokonczyc sprawdzanie czy usuwany element jest kluczem obcym i ewentualnie usunac
-            // rowniez skojarzony wpis w innej tabeli.
             string sqlCommand = SqlCommandFilterCreator.CreateCommand(new AdmissionsPage(this), GetForeignKeyNameFromAdmissionsTable(),
                 primaryKey);
             using (SqlConnection connection = new SqlConnection(ConnectionString))
@@ -378,37 +394,13 @@ namespace AdmissionsManager
             SortBy(orderBy, sortCriterium);
         }
         
-        private void GetPrimaryKeyAndPrimaryKeyName(object objectToGetValues, out string primaryKey, out string primaryKeyName)
+        private void GetPrimaryKeyAndPrimaryKeyName(Table objectToGetValues, out string primaryKey, out string primaryKeyName)
         {
-
-            
             Tabels actualTable = _ActualPage.GetModelType();
             primaryKey = null;
             primaryKeyName = null;
-            switch (actualTable)
-            {
-                // TODO: Uzupełnić Switch()
-                case Tabels.Admissions:
-
-                    break;
-                case Tabels.Patients:
-                    primaryKey = (objectToGetValues as Patient).PeselNumber;
-                    primaryKeyName = (objectToGetValues as Patient).PrimaryKeyNameToSql;
-
-                    break;
-                case Tabels.Doctors:
-
-                    break;
-                case Tabels.Diagnoses:
-
-                    break;
-                case Tabels.Surgeries:
-
-                    break;
-                case Tabels.Rooms:
-
-                    break;
-            }
+            primaryKey = (objectToGetValues as Table).GetPrimaryKey;
+            primaryKeyName = (objectToGetValues as Table).PrimaryKeyNameToSql;
         }
 
         #endregion

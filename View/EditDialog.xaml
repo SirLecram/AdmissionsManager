@@ -32,10 +32,11 @@
                        Margin="0, 5, 0, 5" FontSize="12"/>
         </StackPanel>
         
-        <StackPanel Grid.Column="2" Orientation="Horizontal" Grid.Row="0">
-            <TextBox Name="valueToUpdateTextBox" Width="170" VerticalAlignment="Center"  
-                 Grid.Column="1" Margin="20" />
-            <Button Content="+" Click="Button_Click"/>
+        <StackPanel Grid.Column="2" Orientation="Horizontal" Grid.Row="0" Name="firstValueStackPanel">
+          <!--  <TextBox Name="valueToUpdateTextBox" Width="170" VerticalAlignment="Center"  
+                 Grid.Column="1" Margin="20" /> 
+            
+            <Button Content="+" Click="Button_Click"/> -->
         </StackPanel>
         <TextBlock Grid.Row="1" Text="DODATKOWE INFO" Grid.ColumnSpan="3" HorizontalAlignment="Center" VerticalAlignment="Center"
                    Foreground="Gray" Name="additionalFilterInfo"/>
