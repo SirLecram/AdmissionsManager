@@ -21,17 +21,18 @@ namespace AdmissionsManager.View
     {
         private Dictionary<int, TextBlock> textBlocksDictionary = new Dictionary<int, TextBlock>();
         private Dictionary<int, Control> dataControlsDictionary = new Dictionary<int, Control>();
-        private Dictionary<string, Type> enumTypes;
+        private Dictionary<string, Type> enumTypes; 
         private TextBlock AlertText = new TextBlock();
         private IEnumerable<string> neededValues;
         public List<string> ValuesOfNewObject { get; private set; }
 
-        public NewDialog(IEnumerable<string> namesOfColumn, IDictionary<int, string> typesOfColumn)
+        public NewDialog(IEnumerable<string> namesOfColumn, IDictionary<int, string> typesOfColumn, 
+            IDictionary<string, Type> enumTypes)
         {
             this.InitializeComponent();
             this.neededValues = namesOfColumn;
             ValuesOfNewObject = new List<string>();
-            enumTypes = CreateEnumTypesDictionary();
+            this.enumTypes = enumTypes as Dictionary<string, Type>;
             CreateInterface(namesOfColumn, typesOfColumn);
 
         }
@@ -85,7 +86,7 @@ namespace AdmissionsManager.View
 
                 grid.RowDefinitions.Add(new RowDefinition());
                 TextBlock newTextBlock = new TextBlock();
-                TextBox newTextBox = new TextBox();
+        //        TextBox newTextBox = new TextBox();
                 grid.Children.Add(newTextBlock);
                 grid.Children.Add(control);
                 Grid.SetColumn(control, 1);
@@ -103,17 +104,7 @@ namespace AdmissionsManager.View
             Grid.SetRow(AlertText, grid.RowDefinitions.Count - 1);
             Grid.SetColumnSpan(AlertText, 3);
         }
-        private Dictionary<string, Type> CreateEnumTypesDictionary()
-        {
-            // TODO: Uzupełniać w miare dodawania tabel!
-            Dictionary<string, Type> newDictionary = new Dictionary<string, Type>();
-            newDictionary.Add("Plec", typeof(Sex));
-            newDictionary.Add("Stan", typeof(PatientState));
-            newDictionary.Add("Stopien_naukowy", typeof(AcademicDegrees));
-            newDictionary.Add("Specjalizacja", typeof(MedicalSpecializations));
-            newDictionary.Add("Stanowisko", typeof(JobPositions));
-            return newDictionary;
-        }
+      
         private bool CheckDialogIsFilled()
         {
             bool response = true;

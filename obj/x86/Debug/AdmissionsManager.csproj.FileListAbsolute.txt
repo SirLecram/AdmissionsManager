@@ -293,7 +293,6 @@ C:\Users\MarcelPC\Desktop\Na studia\Informatyka\C#\Ksiazka\AdmissionsManager\Adm
 C:\Users\MarcelPC\Desktop\Na studia\Informatyka\C#\Ksiazka\AdmissionsManager\AdmissionsManager\obj\x86\Debug\resources.en-us.resfiles.intermediate
 C:\Users\MarcelPC\Desktop\Na studia\Informatyka\C#\Ksiazka\AdmissionsManager\AdmissionsManager\obj\x86\Debug\ProjectArchitectures.txt
 C:\Users\MarcelPC\Desktop\Na studia\Informatyka\C#\Ksiazka\AdmissionsManager\AdmissionsManager\bin\x86\Debug\View\AdmissionsPage.xbf
-C:\Users\MarcelPC\Desktop\Na studia\Informatyka\C#\Ksiazka\AdmissionsManager\AdmissionsManager\bin\x86\Debug\View\DiagnosisPage.xbf
 C:\Users\MarcelPC\Desktop\Na studia\Informatyka\C#\Ksiazka\AdmissionsManager\AdmissionsManager\bin\x86\Debug\View\DoctorsPage.xbf
 C:\Users\MarcelPC\Desktop\Na studia\Informatyka\C#\Ksiazka\AdmissionsManager\AdmissionsManager\bin\x86\Debug\View\HomePage.xbf
 C:\Users\MarcelPC\Desktop\Na studia\Informatyka\C#\Ksiazka\AdmissionsManager\AdmissionsManager\bin\x86\Debug\View\PatientsPage.xbf
@@ -301,8 +300,6 @@ C:\Users\MarcelPC\Desktop\Na studia\Informatyka\C#\Ksiazka\AdmissionsManager\Adm
 C:\Users\MarcelPC\Desktop\Na studia\Informatyka\C#\Ksiazka\AdmissionsManager\AdmissionsManager\bin\x86\Debug\View\SurgeriesPage.xbf
 C:\Users\MarcelPC\Desktop\Na studia\Informatyka\C#\Ksiazka\AdmissionsManager\AdmissionsManager\obj\x86\Debug\View\AdmissionsPage.g.i.cs
 C:\Users\MarcelPC\Desktop\Na studia\Informatyka\C#\Ksiazka\AdmissionsManager\AdmissionsManager\obj\x86\Debug\View\AdmissionsPage.g.cs
-C:\Users\MarcelPC\Desktop\Na studia\Informatyka\C#\Ksiazka\AdmissionsManager\AdmissionsManager\obj\x86\Debug\View\DiagnosisPage.g.i.cs
-C:\Users\MarcelPC\Desktop\Na studia\Informatyka\C#\Ksiazka\AdmissionsManager\AdmissionsManager\obj\x86\Debug\View\DiagnosisPage.g.cs
 C:\Users\MarcelPC\Desktop\Na studia\Informatyka\C#\Ksiazka\AdmissionsManager\AdmissionsManager\obj\x86\Debug\View\DoctorsPage.g.i.cs
 C:\Users\MarcelPC\Desktop\Na studia\Informatyka\C#\Ksiazka\AdmissionsManager\AdmissionsManager\obj\x86\Debug\View\DoctorsPage.g.cs
 C:\Users\MarcelPC\Desktop\Na studia\Informatyka\C#\Ksiazka\AdmissionsManager\AdmissionsManager\obj\x86\Debug\View\HomePage.g.i.cs
@@ -314,14 +311,12 @@ C:\Users\MarcelPC\Desktop\Na studia\Informatyka\C#\Ksiazka\AdmissionsManager\Adm
 C:\Users\MarcelPC\Desktop\Na studia\Informatyka\C#\Ksiazka\AdmissionsManager\AdmissionsManager\obj\x86\Debug\View\SurgeriesPage.g.i.cs
 C:\Users\MarcelPC\Desktop\Na studia\Informatyka\C#\Ksiazka\AdmissionsManager\AdmissionsManager\obj\x86\Debug\View\SurgeriesPage.g.cs
 C:\Users\MarcelPC\Desktop\Na studia\Informatyka\C#\Ksiazka\AdmissionsManager\AdmissionsManager\obj\x86\Debug\View\AdmissionsPage.xaml
-C:\Users\MarcelPC\Desktop\Na studia\Informatyka\C#\Ksiazka\AdmissionsManager\AdmissionsManager\obj\x86\Debug\View\DiagnosisPage.xaml
 C:\Users\MarcelPC\Desktop\Na studia\Informatyka\C#\Ksiazka\AdmissionsManager\AdmissionsManager\obj\x86\Debug\View\DoctorsPage.xaml
 C:\Users\MarcelPC\Desktop\Na studia\Informatyka\C#\Ksiazka\AdmissionsManager\AdmissionsManager\obj\x86\Debug\View\HomePage.xaml
 C:\Users\MarcelPC\Desktop\Na studia\Informatyka\C#\Ksiazka\AdmissionsManager\AdmissionsManager\obj\x86\Debug\View\PatientsPage.xaml
 C:\Users\MarcelPC\Desktop\Na studia\Informatyka\C#\Ksiazka\AdmissionsManager\AdmissionsManager\obj\x86\Debug\View\RoomsPage.xaml
 C:\Users\MarcelPC\Desktop\Na studia\Informatyka\C#\Ksiazka\AdmissionsManager\AdmissionsManager\obj\x86\Debug\View\SurgeriesPage.xaml
 C:\Users\MarcelPC\Desktop\Na studia\Informatyka\C#\Ksiazka\AdmissionsManager\AdmissionsManager\obj\x86\Debug\View\AdmissionsPage.xbf
-C:\Users\MarcelPC\Desktop\Na studia\Informatyka\C#\Ksiazka\AdmissionsManager\AdmissionsManager\obj\x86\Debug\View\DiagnosisPage.xbf
 C:\Users\MarcelPC\Desktop\Na studia\Informatyka\C#\Ksiazka\AdmissionsManager\AdmissionsManager\obj\x86\Debug\View\DoctorsPage.xbf
 C:\Users\MarcelPC\Desktop\Na studia\Informatyka\C#\Ksiazka\AdmissionsManager\AdmissionsManager\obj\x86\Debug\View\HomePage.xbf
 C:\Users\MarcelPC\Desktop\Na studia\Informatyka\C#\Ksiazka\AdmissionsManager\AdmissionsManager\obj\x86\Debug\View\PatientsPage.xbf

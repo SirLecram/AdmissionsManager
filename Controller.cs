@@ -10,30 +10,46 @@ using Windows.UI.Popups;
 using System.Data;
 using System.Data.SqlClient;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
+using Windows.UI.Xaml;
 
 namespace AdmissionsManager
 {
-    public class Controller
+    public class Controller: INotifyPropertyChanged
     {
-        private readonly Frame MainFrame;
+        private Frame MainFrame { get; set; }
         public readonly string ConnectionString = @"Data Source=MARCEL\SQLEXPRESS;Initial Catalog = DB_s439397; Integrated Security = true;";
+
+        
+
+        //private ObservableCollection<object> _FullRecordsList { get; set; }
         private ObservableCollection<object> _RecordsList { get; set; }
         public ObservableCollection<object> RecordsList { get => _RecordsList; }
         public string CommandText { get; protected set; }
         private IDatabaseConnectable _ActualPage { get; set; }
+        public Dictionary<string, Type> EnumTypes { get; }
+        public bool IsDataLoaded => _ActualPage.IsConnectedToDb;
         public Controller(Frame mainFrame)
         {
             MainFrame = mainFrame;
             _RecordsList = new ObservableCollection<object>();
             MainFrame.Content = new AdmissionsPage(this);
+            _ActualPage = MainFrame.Content as IDatabaseConnectable;
+            EnumTypes = CreateEnumTypesDictionary();
         }
 
         internal void ChangeFrame(Tabels changeTo)
         {
+            
             CommandText = SqlCommandFilterCreator.ResetCommand(changeTo);
             _RecordsList.Clear();
-            // TODO: UZUPELNIC W PRZYPADKU DODAWANIA KOLEJNYCH MODELI I WIDOKOW
+            // TODO: UZUPELNIC W PRZYPADKU DODAWANIA KOLEJNYCH MODELI I WIDOKOW + 
+            //Do usuniecia stare zmienianie strony
+            // TODO: Zablokować możliwość ciagłego ładowania jednej strony
             IDatabaseConnectable page;
+            _ActualPage.UnloadPage();
+            
+
             switch (changeTo)
             {
                 case Tabels.Admissions:
@@ -43,20 +59,17 @@ namespace AdmissionsManager
                     break;
                 case Tabels.Patients:
                     
-                    page = new PatientsPage(this);
-                    MainFrame.Content = page;
-                    _ActualPage = page;
-                    CommandText = SqlCommandFilterCreator.CreateCommand(_ActualPage);
-                    if ((page as IDatabaseConnectable).IsConnectedToDb)
-                        ReadDataFromDatabase();
+                    this.MainFrame.Navigate(typeof(PatientsPage), this);
+                    _ActualPage = MainFrame.Content as IDatabaseConnectable;
+                    
+                   /* if ((page as IDatabaseConnectable).IsConnectedToDb)
+                        ReadDataFromDatabase();*/
                     break;
                 case Tabels.Doctors:
-                    page = new DoctorsPage(this);
-                    MainFrame.Content = page;
-                    _ActualPage = page;
-                    CommandText = SqlCommandFilterCreator.CreateCommand(_ActualPage);
-                    if ((page as IDatabaseConnectable).IsConnectedToDb)
-                        ReadDataFromDatabase();
+                    
+                    this.MainFrame.Navigate(typeof(DoctorsPage), this);
+                    _ActualPage = MainFrame.Content as IDatabaseConnectable;
+
                     break;
                 case Tabels.Diagnoses:
                     page = new AdmissionsPage(this);
@@ -72,10 +85,12 @@ namespace AdmissionsManager
                     MainFrame.Content = page;
                     break;
                 default:
-                    page = new PatientsPage(this);
+                    //page = new PatientsPage(this);
+                    page = new PatientsPage() as IDatabaseConnectable;
                     break;
             }
-            
+            CommandText = SqlCommandFilterCreator.CreateCommand(_ActualPage);
+
         }
 
         #region Connection DB methods
@@ -118,7 +133,7 @@ namespace AdmissionsManager
                                         valueList.Add(reader[i].ToString());
                                 }
                                 object model = null;
-                                switch(_ActualPage.GetModelType())
+                                switch (_ActualPage.GetModelType())
                                 {
                                     case Tabels.Admissions:
                                         model = new Patient(valueList);
@@ -140,7 +155,7 @@ namespace AdmissionsManager
                                         model = new Doctor(valueList);
                                         break;
                                 }
-                                
+
                                 //var patient = new Patient(pesel,surname,name,date,state,patientSex);
                                 _RecordsList.Add(model);
                             }
@@ -206,20 +221,20 @@ namespace AdmissionsManager
             GetPrimaryKeyAndPrimaryKeyName(objectToUpdate as Table, out string primaryKey, out string primaryKeyName);
             string command = SqlCommandFilterCreator.CreateUpdateCommand(_ActualPage.GetModelType(), primaryKey, primaryKeyName,
                 new List<string> { fieldToUpdate }, new List<string> { valueToUpdate });
-            
+
             int rowsAffected = 0;
             try
             {
                 rowsAffected = await ExecuteTransactCommandOnDatabaseAsync(command);
             }
-            catch(SqlException e)
+            catch (SqlException e)
             {
                 await new MessageDialog(e.Message, "Błędny format danych").ShowAsync();
             }
             ReadDataFromDatabase();
             await new MessageDialog("Zaktualizowano " + rowsAffected.ToString() +
                 " rekordów z tabeli " + _ActualPage.GetModelType().GetEnumDescription() + ".").ShowAsync();
-            
+
         }
         public async void AddNewRecord(List<string> valuesList)
         {
@@ -231,7 +246,7 @@ namespace AdmissionsManager
             {
                 rowsAffected = await ExecuteTransactCommandOnDatabaseAsync(command);
             }
-            catch(SqlException e)
+            catch (SqlException e)
             {
                 await new MessageDialog(e.Message, "Błędny format danych!").ShowAsync();
             }
@@ -239,13 +254,18 @@ namespace AdmissionsManager
             await new MessageDialog("Dodano " + rowsAffected.ToString() +
                 " rekordów do tabeli " + _ActualPage.GetModelType().GetEnumDescription() + ".").ShowAsync();
         }
-        
+
         #endregion
 
         #region Filters and searching
 
         public void SortBy(string orderBy, SortCriteria sortCriterium)
         {
+            /*var newCollection = from model in _FullRecordsList
+                                orderby (model as Patient).PeselNumber ascending
+                                select model;
+            newCollection.ToList();
+            _RecordsList = newCollection as ObservableCollection<object>;*/
             CommandText = SqlCommandFilterCreator.CreateCommand(CommandText, orderBy, sortCriterium);
             ReadDataFromDatabase();
         }
@@ -296,7 +316,7 @@ namespace AdmissionsManager
                     {
                         int columnAmount = reader.FieldCount;
                         Dictionary<int, string> typesDictionary = new Dictionary<int, string>();
-                        for(int i = 0; i < columnAmount; i++)
+                        for (int i = 0; i < columnAmount; i++)
                         {
                             typesDictionary.Add(i, reader.GetDataTypeName(i));
                         }
@@ -332,7 +352,7 @@ namespace AdmissionsManager
                     stringToReturn = "Nr_sali";
                     break;
             }
-            
+
             return stringToReturn;
         }
 
@@ -393,7 +413,7 @@ namespace AdmissionsManager
             CommandText = SqlCommandFilterCreator.ResetCommand(_ActualPage);
             SortBy(orderBy, sortCriterium);
         }
-        
+
         private void GetPrimaryKeyAndPrimaryKeyName(Table objectToGetValues, out string primaryKey, out string primaryKeyName)
         {
             Tabels actualTable = _ActualPage.GetModelType();
@@ -402,7 +422,23 @@ namespace AdmissionsManager
             primaryKey = (objectToGetValues as Table).GetPrimaryKey;
             primaryKeyName = (objectToGetValues as Table).PrimaryKeyNameToSql;
         }
+        private Dictionary<string, Type> CreateEnumTypesDictionary()
+        {
+            // TODO: Uzupełniać w miare dodawania tabel!
+            Dictionary<string, Type> newDictionary = new Dictionary<string, Type>();
+            newDictionary.Add("Plec", typeof(Sex));
+            newDictionary.Add("Stan", typeof(PatientState));
+            newDictionary.Add("Stopien_naukowy", typeof(AcademicDegrees));
+            newDictionary.Add("Specjalizacja", typeof(MedicalSpecializations));
+            newDictionary.Add("Stanowisko", typeof(JobPositions));
+            return newDictionary;
+        }
 
+        public event PropertyChangedEventHandler PropertyChanged;
+        public void OnPropertyChanged(string name)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+        }
         #endregion
 
     }

@@ -6,6 +6,7 @@ using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI.Popups;
@@ -31,20 +32,20 @@ namespace AdmissionsManager.View
         private Tabels TableOfPage { get; }
         private bool _IsConnectedToDb { get; set; }
         public bool IsConnectedToDb { get => _IsConnectedToDb; }
+        private bool _IsDataLoaded { get; set; }
+        public bool IsDataLoaded { get => _IsDataLoaded; }
 
-        public DoctorsPage(Controller dbController)
+        public DoctorsPage()
         {
             this.InitializeComponent();
-            DatabaseController = dbController;
+            
             pageTitle.Text = "Lekarze (Connecting to database...)";
             _IsConnectedToDb = false;
-            ConnectToDatabase();
             TableOfPage = Tabels.Doctors;
 
-            databaseView.ItemsSource = RecordsList;
         }
 
-        public async void ConnectToDatabase()
+        public async Task<bool> ConnectToDatabase()
         {
             using (SqlConnection connection = new SqlConnection(DatabaseController.ConnectionString))
             {
@@ -63,14 +64,18 @@ namespace AdmissionsManager.View
                     pageTitle.Text = "Lekarze (Connected)";
                     List<string> comboBoxesList = await DatabaseController.GetColumnNamesFromTableAsync();
                     lookInComboBox.ItemsSource = sortComboBox.ItemsSource = comboBoxesList;
-                    lookInComboBox.SelectedIndex = sortComboBox.SelectedIndex = 0;
-                    _IsConnectedToDb = true;
+                    //lookInComboBox.SelectedIndex = sortComboBox.SelectedIndex = 0;
+                    
+                    return true;
                 }
                 else
                 {
                     pageTitle.Text = "Lekarze (Can't connect to database)";
-                    _IsConnectedToDb = false;
+                    _IsDataLoaded = true;
+                    DatabaseController.OnPropertyChanged("IsDataLoaded");
+                    return false;
                 }
+                
             }
         }
 
@@ -78,6 +83,8 @@ namespace AdmissionsManager.View
         {
             return TableOfPage;
         }
+
+        #region Database management
 
         private void Sort()
         {
@@ -109,9 +116,10 @@ namespace AdmissionsManager.View
         private async void EditRecord()
         {
             Model.Doctor doctor = databaseView.SelectedItem as Model.Doctor;
-            string textToTitle = "Edytowany pacjent: " + doctor.Name + " " + doctor.Surname;
+            string textToTitle = "Edytowany lekarz: " + doctor.Name + " " + doctor.Surname;
             Dictionary<int, string> typesDictionary = await DatabaseController.GetColumnTypesAsync();
-            EditDialog dialog = new EditDialog(await DatabaseController.GetColumnNamesFromTableAsync(), typesDictionary, textToTitle);
+            EditDialog dialog = new EditDialog(await DatabaseController.GetColumnNamesFromTableAsync(), typesDictionary, textToTitle,
+                DatabaseController.EnumTypes);
             ContentDialogResult dialogResult = await dialog.ShowAsync();
             if (dialogResult == ContentDialogResult.Primary && !string.IsNullOrEmpty(dialog.Result))
             {
@@ -123,7 +131,8 @@ namespace AdmissionsManager.View
         private async void NewRecord()
         {
             Dictionary<int, string> typesDictionary = await DatabaseController.GetColumnTypesAsync();
-            NewDialog createDialog = new NewDialog(await DatabaseController.GetColumnNamesFromTableAsync(), typesDictionary);
+            NewDialog createDialog = new NewDialog(await DatabaseController.GetColumnNamesFromTableAsync(), typesDictionary,
+                DatabaseController.EnumTypes);
             ContentDialogResult dialogResult = await createDialog.ShowAsync();
             if (dialogResult == ContentDialogResult.Primary && createDialog.ValuesOfNewObject.Any())
             {
@@ -132,9 +141,14 @@ namespace AdmissionsManager.View
             }
         }
 
+        #endregion
+
+        #region Events
+
         private void SortComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            Sort();
+            if (_IsConnectedToDb)
+                Sort();
         }
 
         private void RadionBtn_Click(object sender, RoutedEventArgs e)
@@ -175,5 +189,42 @@ namespace AdmissionsManager.View
         {
             NewRecord();
         }
+
+        #endregion
+
+        #region Navigation between pages
+
+        protected override void OnNavigatedTo(NavigationEventArgs e)
+        {
+            DatabaseController = e.Parameter as Controller;
+            _IsDataLoaded = false;
+            DatabaseController.OnPropertyChanged("IsDataLoaded");
+        }
+
+        private async void Page_Loaded(object sender, RoutedEventArgs e)
+        {
+            bool IsConnectionAvailable;
+            if (IsConnectionAvailable = await ConnectToDatabase())
+            {
+                _IsConnectedToDb = IsConnectionAvailable;
+                databaseView.ItemsSource = RecordsList;
+                lookInComboBox.SelectedIndex = 0;
+                sortComboBox.SelectedIndex = 0;
+                
+            }
+            _IsDataLoaded = true;
+            DatabaseController.OnPropertyChanged("IsDataLoaded");
+        }
+        public void UnloadPage()
+        {
+            _IsConnectedToDb = false;
+            databaseView.ItemsSource = null;
+            lookInComboBox.ItemsSource = null;
+            sortComboBox.ItemsSource = null;
+            _IsDataLoaded = false;
+            DatabaseController.OnPropertyChanged("IsDataLoaded");
+        }
+
+        #endregion
     }
 }

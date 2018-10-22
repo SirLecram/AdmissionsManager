@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.UI.Xaml;
 
 namespace AdmissionsManager.View
 {
@@ -11,7 +12,9 @@ namespace AdmissionsManager.View
     {
         ObservableCollection<object> RecordsList { get; }
         bool IsConnectedToDb { get; }
-        void ConnectToDatabase();
+        bool IsDataLoaded { get; }
+        Task<bool> ConnectToDatabase();
         Tabels GetModelType();
+        void UnloadPage();
     }
 }

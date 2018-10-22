@@ -112,9 +112,6 @@
     <Compile Include="View\AdmissionsPage.xaml.cs">
       <DependentUpon>AdmissionsPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\DiagnosisPage.xaml.cs">
-      <DependentUpon>DiagnosisPage.xaml</DependentUpon>
-    </Compile>
     <Compile Include="View\DoctorsPage.xaml.cs">
       <DependentUpon>DoctorsPage.xaml</DependentUpon>
     </Compile>
@@ -164,10 +161,6 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="View\AdmissionsPage.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="View\DiagnosisPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

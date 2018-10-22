@@ -17,14 +17,14 @@
         </Grid.RowDefinitions>
         <CommandBar x:ConnectionId='2' FlowDirection="LeftToRight" VerticalAlignment="Top" Style="{StaticResource CommandBarRevealStyle}" 
                     Name="navigationBar" Grid.Row="0">
-            <AppBarButton x:ConnectionId='4' Icon="Street" Label="Sale" Tag="6"                           />
-            <AppBarButton x:ConnectionId='5' Icon="Cut" Label="Operacje" Tag="5"                           />
-            <AppBarButton x:ConnectionId='6' Icon="Paste" Label="Diagnozy" Tag="4"                           />
-            <AppBarButton x:ConnectionId='7' Icon="WebCam" Label="Pracownicy" Tag="3"                           />
-            <AppBarButton x:ConnectionId='8' Icon="People" Label="Pacjenci" Tag="2"                           />
-            <AppBarButton x:ConnectionId='9' Icon="AddFriend" Label="Przyjęcia" Tag="1"                           />
+            <AppBarButton x:ConnectionId='4' Icon="Street" Label="Sale" Tag="6"                            IsEnabled="{Binding IsDataLoaded}"/>
+            <AppBarButton x:ConnectionId='5' Icon="Cut" Label="Operacje" Tag="5"                            IsEnabled="{Binding IsDataLoaded}"/>
+            <AppBarButton x:ConnectionId='6' Icon="Paste" Label="Diagnozy" Tag="4"                            IsEnabled="{Binding IsDataLoaded}"/>
+            <AppBarButton x:ConnectionId='7' Icon="WebCam" Label="Pracownicy" Tag="3"                            IsEnabled="{Binding IsDataLoaded}"/>
+            <AppBarButton x:ConnectionId='8' Icon="People" Label="Pacjenci" Tag="2"                            IsEnabled="{Binding IsDataLoaded}"/>
+            <AppBarButton x:ConnectionId='9' Icon="AddFriend" Label="Przyjęcia" Tag="1"                            IsEnabled="{Binding IsDataLoaded}"/>
         </CommandBar>
-        <Frame x:ConnectionId='3' Name="mainFrame" Grid.Row="1" Margin="5"/>
+        <Frame x:ConnectionId='3' Name="mainFrame" Grid.Row="1" Margin="5"/> 
     </Grid>
 </Page>
 

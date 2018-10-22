@@ -10,7 +10,6 @@ AdmissionsManager.xr.xml
 App.xbf
 MainPage.xbf
 View\AdmissionsPage.xbf
-View\DiagnosisPage.xbf
 View\DoctorsPage.xbf
 View\EditDialog.xbf
 View\HomePage.xbf

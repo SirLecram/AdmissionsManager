@@ -7,7 +7,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:inne="using:AdmissionsManager.Model"
     mc:Ignorable="d"
-    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" Loaded="Page_Loaded" >
 
     <Grid Background="AntiqueWhite">
         <Grid.RowDefinitions>
@@ -77,7 +77,7 @@
             <TextBlock Text="Sortuj według:" Grid.Row="1" HorizontalAlignment="Stretch" 
                      VerticalAlignment="Center" Margin="10"/>
             <ComboBox Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" HorizontalAlignment="Stretch" VerticalAlignment="Center"
-                      Margin="10" Name="sortComboBox" SelectionChanged="SortComboBox_SelectionChanged"/>
+                      Margin="10" Name="sortComboBox" SelectionChanged="SortComboBox_SelectionChanged" />
             <StackPanel Grid.Row="2" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Center">
                 <RadioButton Content="Rosnąco" Margin="15, 0, 15, 0" IsChecked="True" Tag="0" Name="radioBtn1" Click="RadionBtn_Click"/>
                 <RadioButton Content="Malejąco" Margin="15, 0, 15, 0" Tag="1" Name="radionBtn2" Click="RadionBtn_Click"/>

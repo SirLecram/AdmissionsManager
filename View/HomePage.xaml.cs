@@ -23,10 +23,15 @@ namespace AdmissionsManager.View
     public sealed partial class HomePage : Page
     {
         private Controller DatabaseController;
-        public HomePage(Controller dbController)
+        public HomePage(/*object dbController*/)
         {
             this.InitializeComponent();
-            DatabaseController = dbController;
+            //DatabaseController = dbController as Controller;
+        }
+        protected override void OnNavigatedTo(NavigationEventArgs e)
+        {
+            DatabaseController = e.Parameter as Controller;
+           
         }
     }
 }

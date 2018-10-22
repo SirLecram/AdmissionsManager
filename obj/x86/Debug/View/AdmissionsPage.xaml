@@ -24,7 +24,7 @@
         <TextBlock Text="Przyjęcia" HorizontalAlignment="Left" Margin="15, 5, 0, 0" FontSize="20"
                    VerticalAlignment="Top"/>
        <!-- <StackPanel Grid.Row="1" Grid.ColumnSpan="2" Orientation="Horizontal" Margin="10" HorizontalAlignment="Stretch"> -->
-            <Button Content="Nowe przyjęcie" Margin="10, 0, 20, 0" HorizontalAlignment="Stretch" Grid.Row="1"/>
+            <Button x:ConnectionId='2' Content="Nowe przyjęcie" Margin="10, 0, 20, 0" HorizontalAlignment="Stretch" Grid.Row="1"                     />
             <Button Content="Usuń zaznaczone" Margin="10, 0, 20, 0" HorizontalAlignment="Stretch" Grid.Row="1" Grid.Column="1"/>
        <!-- </StackPanel> -->
         
@@ -45,7 +45,7 @@
                      VerticalAlignment="Center" Margin="10"/>
             <TextBlock Text="Szukaj w:" Grid.Row="2" HorizontalAlignment="Stretch" 
                      VerticalAlignment="Center" Margin="10"/>
-            <TextBox x:ConnectionId='2' Name="searchBox" Grid.Row="1" Grid.ColumnSpan="2" Grid.Column="1" HorizontalAlignment="Stretch" 
+            <TextBox x:ConnectionId='3' Name="searchBox" Grid.Row="1" Grid.ColumnSpan="2" Grid.Column="1" HorizontalAlignment="Stretch" 
                      VerticalAlignment="Center" Margin="10"/>
             <ComboBox Grid.Row="2" Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Center" Margin="10"/>
             <Button Content="Przeszukaj bazę" Grid.Row="2" Grid.Column="2" VerticalAlignment="Center" 

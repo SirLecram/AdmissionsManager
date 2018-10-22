@@ -13,6 +13,7 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using AdmissionsManager.View;
+using System.Threading.Tasks;
 
 //Szablon elementu Pusta strona jest udokumentowany na stronie https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x415
 
@@ -20,14 +21,13 @@ namespace AdmissionsManager
 {
     /// <summary>
     /// Zrobione ostatnio:
-    /// Rozbudowa modelu Doctor; Kolejne enumy: EnumTypes, JobPositions, MedicalSpecializations;
-    /// Do dialogu umożliwiającego tworzenie nowych rekordów dodano  wstępne renderowanie ComboBox zamiast 
-    /// TextBox w przypadku wartości reprezentowanych w kodzie przez enum oraz potrzebne właściwości;
-    /// Dodano prywatne wlasciwosci do modelu przy wlasciwosciach Enum (Do bindowania);
-    /// Wstępnie działa widok i model Doctor; Poprawiono błędy związane z przełączaniem się między kartami; 
-    /// Widok i model lekarze działa sprawnie ( do testów); Przerobione niektóre metody aby były bardziej uniwersalne 
-    /// i zeby można je było stosowac to wszystkich widoków i modeli (np. GetPrimaryKeyAndPrimaryKeyName);
-    /// 
+    /// Przeniesienie EnumTypes do controller z NewDialog aby uniknąć redundancji; 
+    /// Przystosowanie NewDialog i EditDialog do korzystania z przeniesionych metod w celu tworzenia interfejsu;
+    /// Do EditDialog również został dodany combobox w wypadku wartości przyjmujących ENUM;
+    /// Wyeliminowany blad w momencie zmiany strony; Zmiana sposobu nawigowania po aplikacji; 
+    /// Przeniesienie inicjowania strony do eventu Loaded; Zmieniono metode ConnectToDatabase() z IDatabaseConnectable na Task<bool>;
+    /// Event Page_Loaded i metoda czyszcząca dane z poprzedniego page przed Navigate zostala dodana (do IDatabaseConnectable);
+    /// Regions i poprawiona czytelnosc kodu (DoctorsView i PatientsView);
     /// 
     /// Zrobione: 
     /// Puste klasy modelu; wstepnie model pacjenta; enum typ tabeli; strony; dzialanie commandbar; przelaczanie miedzy frame;
@@ -47,12 +47,17 @@ namespace AdmissionsManager
     /// Do NewDialog zostało dodane sprawdzanie czy wzystkie pola są wypełnione; Anulowanie zamykania w razie pozostawienia pustych pól;
     /// Dodano textblock z alertem; Dodanie mechanizmu działania dialoga; Additional security and data validation; 
     /// Dodawanie nowego pacjenta w pełni działa; Enum AcademicDegrees, ; Wstepnie model Doctor; Rozszerzenie string GetEnumFromDescription;
+    /// Rozbudowa modelu Doctor; Kolejne enumy: EnumTypes, JobPositions, MedicalSpecializations;
+    /// Do dialogu umożliwiającego tworzenie nowych rekordów dodano  wstępne renderowanie ComboBox zamiast 
+    /// TextBox w przypadku wartości reprezentowanych w kodzie przez enum oraz potrzebne właściwości;
+    /// Dodano prywatne wlasciwosci do modelu przy wlasciwosciach Enum (Do bindowania);
+    /// Wstępnie działa widok i model Doctor; Poprawiono błędy związane z przełączaniem się między kartami; 
+    /// Widok i model lekarze działa sprawnie ( do testów); Przerobione niektóre metody aby były bardziej uniwersalne 
+    /// i zeby można je było stosowac to wszystkich widoków i modeli (np. GetPrimaryKeyAndPrimaryKeyName);
     /// 
     /// Do zrobienia: Pozostałe klasy page; przemyslenie w ktorym miejscu laczyc z baza; Postarac sie nie uzywac Modelu w View;
     /// Dodanie w kontrolerze na stałe parametrów zapytania (Lub np. wlasciwosc z obecnym page (IDatabaseConnectable)), ma to pomoc
     /// w budowaniu zapytan; Moze dodanie klas odpowiedzialnych za czesc zapytania z wyszukiwaniem i filtrami ?
-    /// MOZE Wlasciwosci odpowiedzialne za Wyswietlanie combobox w newDialog wrzucic do Controller i uzywac ich w dialogach 
-    /// oraz widokach?
     /// </summary>
     public sealed partial class MainPage : Page
     {
@@ -61,13 +66,22 @@ namespace AdmissionsManager
         {
             this.InitializeComponent();
             controler = new Controller(mainFrame);
+            navigationBar.DataContext = controler;
             
         }
 
         private void AppBarButton_Click(object sender, RoutedEventArgs e)
         {
-            Tabels frameNumber = (Tabels) int.Parse((sender as AppBarButton).Tag.ToString());
-            controler.ChangeFrame(frameNumber);
+
+            //controler.OnPropertyChanged("IsDataLoaded");
+             Tabels frameNumber = (Tabels) int.Parse((sender as AppBarButton).Tag.ToString());
+
+             controler.ChangeFrame(frameNumber);
+            //this.Frame.Navigate(typeof(HomePage), controler);
+
+            
+            //controler.OnPropertyChanged("IsDataLoaded");
         }
+        
     }
 }
