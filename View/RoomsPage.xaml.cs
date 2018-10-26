@@ -12,9 +12,10 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
+using AdmissionsManager.Controlers;
 
 //Szablon elementu Pusta strona jest udokumentowany na stronie https://go.microsoft.com/fwlink/?LinkId=234238
-
+// TODO: Usunac moze using Controlers
 namespace AdmissionsManager.View
 {
     /// <summary>
@@ -22,8 +23,8 @@ namespace AdmissionsManager.View
     /// </summary>
     public sealed partial class RoomsPage : Page
     {
-        private Controller DatabaseController;
-        public RoomsPage(Controller dbController)
+        private Controler DatabaseController;
+        public RoomsPage(Controler dbController)
         {
             this.InitializeComponent();
             DatabaseController = dbController;

@@ -12,6 +12,7 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
+using AdmissionsManager.Controlers;
 
 //Szablon elementu Pusta strona jest udokumentowany na stronie https://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -22,7 +23,7 @@ namespace AdmissionsManager.View
     /// </summary>
     public sealed partial class HomePage : Page
     {
-        private Controller DatabaseController;
+        private Controler DatabaseController;
         public HomePage(/*object dbController*/)
         {
             this.InitializeComponent();
@@ -30,7 +31,7 @@ namespace AdmissionsManager.View
         }
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
-            DatabaseController = e.Parameter as Controller;
+            DatabaseController = e.Parameter as Controler;
            
         }
     }

@@ -7,7 +7,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
-    MinWidth="800" MinHeight="540"
+    MinWidth="800" MinHeight="540" Loaded="Page_Loaded"
     >
 
     <Grid>
@@ -20,9 +20,9 @@
             <AppBarButton Icon="Street" Label="Sale" Tag="6" Click="AppBarButton_Click" IsEnabled="{Binding IsDataLoaded}"/>
             <AppBarButton Icon="Cut" Label="Operacje" Tag="5" Click="AppBarButton_Click" IsEnabled="{Binding IsDataLoaded}"/>
             <AppBarButton Icon="Paste" Label="Diagnozy" Tag="4" Click="AppBarButton_Click" IsEnabled="{Binding IsDataLoaded}"/>
-            <AppBarButton Icon="WebCam" Label="Pracownicy" Tag="3" Click="AppBarButton_Click" IsEnabled="{Binding IsDataLoaded}"/>
-            <AppBarButton Icon="People" Label="Pacjenci" Tag="2" Click="AppBarButton_Click" IsEnabled="{Binding IsDataLoaded}"/>
-            <AppBarButton Icon="AddFriend" Label="Przyjęcia" Tag="1" Click="AppBarButton_Click" IsEnabled="{Binding IsDataLoaded}"/>
+            <AppBarButton Icon="WebCam" Label="Pracownicy" Tag="DoctorsPage" Click="AppBarButton_Click" IsEnabled="{Binding IsDataLoaded}"/>
+            <AppBarButton Icon="People" Label="Pacjenci" Tag="PatientsPage" Click="AppBarButton_Click" IsEnabled="{Binding IsDataLoaded}"/>
+            <AppBarButton Icon="AddFriend" Label="Przyjęcia" Tag="AdmissionsPage" Click="AppBarButton_Click" IsEnabled="{Binding IsDataLoaded}"/>
         </CommandBar>
         <Frame Name="mainFrame" Grid.Row="1" Margin="5"/> 
     </Grid>

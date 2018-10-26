@@ -13,32 +13,33 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using Windows.UI.Xaml;
 
-namespace AdmissionsManager
+namespace AdmissionsManager.Controlers
 {
-    public class Controller: INotifyPropertyChanged
+    public class Controler: INotifyPropertyChanged
     {
         private Frame MainFrame { get; set; }
-        public readonly string ConnectionString = @"Data Source=MARCEL\SQLEXPRESS;Initial Catalog = DB_s439397; Integrated Security = true;";
-
+        //public readonly string ConnectionString = @"Data Source=MARCEL\SQLEXPRESS;Initial Catalog = DB_s439397; Integrated Security = true;";
+        
         
 
         //private ObservableCollection<object> _FullRecordsList { get; set; }
-        private ObservableCollection<object> _RecordsList { get; set; }
-        public ObservableCollection<object> RecordsList { get => _RecordsList; }
+        private ObservableCollection<ISqlTableModelable> _RecordsList { get; set; }
+        public ObservableCollection<ISqlTableModelable> RecordsList { get => _RecordsList; }
         public string CommandText { get; protected set; }
         private IDatabaseConnectable _ActualPage { get; set; }
         public Dictionary<string, Type> EnumTypes { get; }
         public bool IsDataLoaded => _ActualPage.IsConnectedToDb;
-        public Controller(Frame mainFrame)
+        public Controler(Frame mainFrame)
         {
             MainFrame = mainFrame;
-            _RecordsList = new ObservableCollection<object>();
+            _RecordsList = new ObservableCollection<ISqlTableModelable>();
             MainFrame.Content = new AdmissionsPage(this);
+            
             _ActualPage = MainFrame.Content as IDatabaseConnectable;
             EnumTypes = CreateEnumTypesDictionary();
         }
 
-        internal void ChangeFrame(Tabels changeTo)
+      /*  internal void ChangeFrame(Tabels changeTo)
         {
             
             CommandText = SqlCommandFilterCreator.ResetCommand(changeTo);
@@ -63,7 +64,7 @@ namespace AdmissionsManager
                     _ActualPage = MainFrame.Content as IDatabaseConnectable;
                     
                    /* if ((page as IDatabaseConnectable).IsConnectedToDb)
-                        ReadDataFromDatabase();*/
+                        ReadDataFromDatabase();
                     break;
                 case Tabels.Doctors:
                     
@@ -91,14 +92,14 @@ namespace AdmissionsManager
             }
             CommandText = SqlCommandFilterCreator.CreateCommand(_ActualPage);
 
-        }
+        } */
 
         #region Connection DB methods
         // TODO: Dodac opis metody aby uzywac ja tylko gdy baza jest podlaczona
         public async void ReadDataFromDatabase()
         {
 
-            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            using (SqlConnection connection = new SqlConnection((App.Current as App).ConnectionString))
             {
                 try
                 {
@@ -132,7 +133,7 @@ namespace AdmissionsManager
                                     else
                                         valueList.Add(reader[i].ToString());
                                 }
-                                object model = null;
+                                ISqlTableModelable model = null;
                                 switch (_ActualPage.GetModelType())
                                 {
                                     case Tabels.Admissions:
@@ -168,7 +169,7 @@ namespace AdmissionsManager
         public async Task<int> ExecuteTransactCommandOnDatabaseAsync(string commandText)
         {
             int rowsAffected = 0;
-            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            using (SqlConnection connection = new SqlConnection((App.Current as App).ConnectionString))
             {
                 await connection.OpenAsync();
                 if (connection.State == ConnectionState.Open)
@@ -192,7 +193,7 @@ namespace AdmissionsManager
         {
             string primaryKey = null;
             string primaryKeyName = null;
-            GetPrimaryKeyAndPrimaryKeyName(objectToDelete as Table, out primaryKey, out primaryKeyName);
+            GetPrimaryKeyAndPrimaryKeyName(objectToDelete as SqlTable, out primaryKey, out primaryKeyName);
             string commandText = null;
             bool isCommandToExecute = false;
 
@@ -218,7 +219,7 @@ namespace AdmissionsManager
 
         public async void EditRecordAsync(object objectToUpdate, string fieldToUpdate, string valueToUpdate)
         {
-            GetPrimaryKeyAndPrimaryKeyName(objectToUpdate as Table, out string primaryKey, out string primaryKeyName);
+            GetPrimaryKeyAndPrimaryKeyName(objectToUpdate as SqlTable, out string primaryKey, out string primaryKeyName);
             string command = SqlCommandFilterCreator.CreateUpdateCommand(_ActualPage.GetModelType(), primaryKey, primaryKeyName,
                 new List<string> { fieldToUpdate }, new List<string> { valueToUpdate });
 
@@ -283,7 +284,7 @@ namespace AdmissionsManager
 
         public async Task<List<string>> GetColumnNamesFromTableAsync()
         {
-            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            using (SqlConnection connection = new SqlConnection((App.Current as App).ConnectionString))
             {
                 await connection.OpenAsync();
 
@@ -306,7 +307,7 @@ namespace AdmissionsManager
         }
         public async Task<Dictionary<int, string>> GetColumnTypesAsync()
         {
-            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            using (SqlConnection connection = new SqlConnection((App.Current as App).ConnectionString))
             {
                 await connection.OpenAsync();
                 using (SqlCommand command = connection.CreateCommand())
@@ -364,7 +365,7 @@ namespace AdmissionsManager
         {
             string sqlCommand = SqlCommandFilterCreator.CreateCommand(new AdmissionsPage(this), GetForeignKeyNameFromAdmissionsTable(),
                 primaryKey);
-            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            using (SqlConnection connection = new SqlConnection((App.Current as App).ConnectionString))
             {
                 await connection.OpenAsync();
                 using (SqlCommand cmd = connection.CreateCommand())
@@ -414,13 +415,13 @@ namespace AdmissionsManager
             SortBy(orderBy, sortCriterium);
         }
 
-        private void GetPrimaryKeyAndPrimaryKeyName(Table objectToGetValues, out string primaryKey, out string primaryKeyName)
+        private void GetPrimaryKeyAndPrimaryKeyName(SqlTable objectToGetValues, out string primaryKey, out string primaryKeyName)
         {
             Tabels actualTable = _ActualPage.GetModelType();
             primaryKey = null;
             primaryKeyName = null;
-            primaryKey = (objectToGetValues as Table).GetPrimaryKey;
-            primaryKeyName = (objectToGetValues as Table).PrimaryKeyNameToSql;
+            primaryKey = (objectToGetValues as ISqlTableModelable).GetPrimaryKey();
+            primaryKeyName = (objectToGetValues as ISqlTableModelable).GetPrimaryKeyName();
         }
         private Dictionary<string, Type> CreateEnumTypesDictionary()
         {

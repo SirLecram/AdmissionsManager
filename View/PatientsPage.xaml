@@ -141,7 +141,7 @@
                             <ColumnDefinition/>
                         </Grid.ColumnDefinitions>
                         <TextBlock Name="ItemId"
-                                    Text="{x:Bind PeselNumber}"
+                                    Text="{x:Bind PrimaryKey}"
                                     Grid.Column="0" />
                         <TextBlock Name="ItemName"
                                     Text="{x:Bind Surname}"

@@ -7,11 +7,10 @@ using System.Threading.Tasks;
 
 namespace AdmissionsManager.Model
 {
-    public class Patient : Table
+    internal class Patient : SqlTable
     {
-        public override string PrimaryKeyNameToSql { get; protected set; }
-        public override string GetPrimaryKey => PeselNumber;
-        public string PeselNumber { get; protected set; }
+        /*public override string PrimaryKeyNameToSql { get; protected set; }
+        public override string GetPrimaryKey => PeselNumber;*/
         public string Surname { get; protected set; }
         public string Name { get; protected set; }
         public DateTime BirthDate { get; protected set; }
@@ -29,39 +28,37 @@ namespace AdmissionsManager.Model
         
 
 
-        public Patient() : base()
+        protected Patient() : base()
         {
-            PrimaryKeyNameToSql = "PESEL";
         }
-        public Patient(string pesel, string surname, string name, DateTime birthDate, PatientState patientState,
-            Sex patientSex) : base()
+        public Patient(string primaryKey, string surname, string name, DateTime birthDate, PatientState patientState,
+            Sex patientSex) : base(primaryKey, "PESEL", new List<string>())
         {
-            if (pesel.Length < 11 || pesel.Length > 11)
+            if (primaryKey.Length < 11 || primaryKey.Length > 11)
                 throw new FormatException("PESEL musi mieć 11 cyfr");
-            PeselNumber = pesel;
+            PrimaryKey = primaryKey;
             Surname = surname;
             Name = name;
             BirthDate = birthDate;
             _PatientState = patientState;
             _PatientSex = patientSex;
-            PrimaryKeyNameToSql = "PESEL";
         }
         /// <summary>
         /// List have to be in right order (pesel, surname, name, birth date, patient state, patient sex).
         /// </summary>
         /// <param name="listOfValues"></param>
-        public Patient(List<string> listOfValues) : base()
+        public Patient(List<string> listOfValues) : base(listOfValues[0], "PESEL", new List<string>())
         {
             // TODO: Dodać zabezpieczenia dla pozostałych wartosci
+            // TODO: VALIDATOR! Lista kolumn nazw;
             if (listOfValues[0].Length < 11 || listOfValues[0].Length > 11)
                 throw new FormatException("PESEL musi mieć 11 cyfr");
-            PeselNumber = listOfValues[0];
+            PrimaryKey = listOfValues[0];
             Surname = listOfValues[1];
             Name = listOfValues[2];
             BirthDate = DateTime.Parse(listOfValues[3]);
             _PatientState = listOfValues[4].GetEnumFromDescription<PatientState>();
             _PatientSex = (Sex)Enum.Parse(typeof(Sex), listOfValues[5]);
-            PrimaryKeyNameToSql = "PESEL";
         }
     }
 }

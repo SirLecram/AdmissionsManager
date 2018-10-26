@@ -17,6 +17,7 @@ using System.Data.SqlClient;
 using Windows.UI.Popups;
 using System.Threading.Tasks;
 using System.Collections.ObjectModel;
+using AdmissionsManager.Controlers;
 
 //Szablon elementu Pusta strona jest udokumentowany na stronie https://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -25,10 +26,10 @@ namespace AdmissionsManager.View
     /// <summary>
     /// Pusta strona, która może być używana samodzielnie lub do której można nawigować wewnątrz ramki.
     /// </summary>
-    public sealed partial class PatientsPage : Page, IDatabaseConnectable
+    public sealed partial class PatientsPage : Page, IDatabaseConnectable, IPageNavigateable
     {
-        private Controller DatabaseController;
-        public ObservableCollection<object> RecordsList { get => DatabaseController.RecordsList; }
+        private Controler DatabaseController;
+        public ObservableCollection<ISqlTableModelable> RecordsList { get => DatabaseController.RecordsList; }
         private Tabels TableOfPage { get; }
         private bool _IsConnectedToDb { get; set; }
         public bool IsConnectedToDb { get => _IsConnectedToDb; }
@@ -42,9 +43,9 @@ namespace AdmissionsManager.View
             
             TableOfPage = Tabels.Patients;
         }
-        public async Task<bool> ConnectToDatabase()
+        public async Task<bool> ConnectToDatabaseAsync()
         {
-            using (SqlConnection connection = new SqlConnection(DatabaseController.ConnectionString))
+            using (SqlConnection connection = new SqlConnection((App.Current as App).ConnectionString))
             { 
                 try
                 {
@@ -192,7 +193,7 @@ namespace AdmissionsManager.View
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
-            DatabaseController = e.Parameter as Controller;
+            DatabaseController = e.Parameter as Controler;
             _IsDataLoaded = false;
             DatabaseController.OnPropertyChanged("IsDataLoaded");
         }
@@ -200,7 +201,7 @@ namespace AdmissionsManager.View
         private async void Page_Loaded(object sender, RoutedEventArgs e)
         { 
             bool IsConnectionAvailable;
-            if (IsConnectionAvailable = await ConnectToDatabase())
+            if (IsConnectionAvailable = await ConnectToDatabaseAsync())
             {
                 databaseView.ItemsSource = RecordsList;
                 _IsConnectedToDb = IsConnectionAvailable;

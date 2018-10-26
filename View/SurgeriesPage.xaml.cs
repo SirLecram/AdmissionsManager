@@ -12,18 +12,20 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
+using AdmissionsManager.Controlers;
 
 //Szablon elementu Pusta strona jest udokumentowany na stronie https://go.microsoft.com/fwlink/?LinkId=234238
 
 namespace AdmissionsManager.View
 {
     /// <summary>
+    /// 
     /// Pusta strona, która może być używana samodzielnie lub do której można nawigować wewnątrz ramki.
     /// </summary>
     public sealed partial class SurgeriesPage : Page
     {
-        private Controller DatabaseController;
-        public SurgeriesPage(Controller dbController)
+        private Controler DatabaseController;
+        public SurgeriesPage(Controler dbController)
         {
             this.InitializeComponent();
             DatabaseController = dbController;

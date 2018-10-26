@@ -6,15 +6,11 @@ using System.Threading.Tasks;
 
 namespace AdmissionsManager.Model
 {
-    class Admission : Table
+    class Admission : SqlTable
     {
 
-        public Admission()
+        public Admission() : base()
         {
         }
-
-        public override string PrimaryKeyNameToSql { get => throw new NotImplementedException(); protected set => throw new NotImplementedException(); }
-
-        public override string GetPrimaryKey => throw new NotImplementedException();
     }
 }

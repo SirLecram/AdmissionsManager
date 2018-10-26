@@ -23,6 +23,8 @@ namespace AdmissionsManager
     /// </summary>
     sealed partial class App : Application
     {
+        public readonly string ConnectionString = @"Data Source=MARCEL\SQLEXPRESS;Initial Catalog = DB_s439397; Integrated Security = true;";
+
         /// <summary>
         /// Inicjuje pojedynczy obiekt aplikacji. Jest to pierwszy wiersz napisanego kodu
         /// wykonywanego i jest logicznym odpowiednikiem metod main() lub WinMain().

@@ -14,6 +14,7 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
+using AdmissionsManager.Controlers;
 
 //Szablon elementu Pusta strona jest udokumentowany na stronie https://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -22,26 +23,26 @@ namespace AdmissionsManager.View
     /// <summary>
     /// Pusta strona, która może być używana samodzielnie lub do której można nawigować wewnątrz ramki.
     /// </summary>
-    public sealed partial class AdmissionsPage : Page, IDatabaseConnectable
+    public sealed partial class AdmissionsPage : Page, IDatabaseConnectable, IPageNavigateable
     {
-        private Controller DatabaseController;
+        private Controler DatabaseController;
         private bool _IsDataLoaded { get; set; }
         public bool IsDataLoaded { get => _IsDataLoaded; }
 
-        public AdmissionsPage(Controller dbController)
+        public AdmissionsPage(Controler dbController)
         {
             this.InitializeComponent();
             DatabaseController = dbController;
             
         }
 
-        public ObservableCollection<object> RecordsList => throw new NotImplementedException();
+        public ObservableCollection<ISqlTableModelable> RecordsList => throw new NotImplementedException();
 
         public bool IsConnectedToDb => true;
         /*private bool test = false;
         public bool IsDataLoaded => test;*/
 
-        public async Task<bool> ConnectToDatabase()
+        public async Task<bool> ConnectToDatabaseAsync()
         {
             return true;
         }

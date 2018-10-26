@@ -143,7 +143,7 @@
                                 <ColumnDefinition/>
                             </Grid.ColumnDefinitions>
                             <TextBlock x:ConnectionId='5' Name="ItemId"
-                                                            
+                                                              
                                     Grid.Column="0" FontSize="12"/>
                             <TextBlock x:ConnectionId='6' Name="ItemName"
                                                         
