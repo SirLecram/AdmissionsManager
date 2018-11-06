@@ -21,22 +21,31 @@ namespace AdmissionsManager.Controlers
             ActualPage = actualPage;
             Validator = validator;
             Parameters = parametersToPage;
+            /*Type type = actualPage.GetType();
+            ChangeFrame(type, )*/
         }
-        /*public ViewNavigator(IPageNavigateable actualPage, IValidateIfInterfaceIsImplemented validator, object parametersToPage)
-            : this( validator, actualPage)
-        {
-            Parameters = parametersToPage;
-        }*/
 
+        /// <summary>
+        /// Sets parameters which is passed to the target page.
+        /// </summary>
+        /// <param name="parameter"></param>
         public void SetParameter(object parameter)
         {
             Parameters = parameter;
         }
+        /// <summary>
+        /// Removes parameters.
+        /// </summary>
         public void RemoveParameters()
         {
             Parameters = null;
         }
-        
+        /// <summary>
+        /// Navigates inside navigationFrame to new page and passes the parameter to new page.
+        /// </summary>
+        /// <param name="typeOfPage">The type of the target page</param>
+        /// <param name="navigationFrame">The navigation frame</param>
+        /// <returns></returns>
         public IPageNavigateable ChangeFrame(Type typeOfPage, Frame navigationFrame)
         {
             if (!Validator.ValidateIfTypeImplementInterface(typeOfPage, "IPageNavigateable"))
@@ -47,7 +56,9 @@ namespace AdmissionsManager.Controlers
                 navigationFrame.Navigate(typeOfPage, Parameters);
             else
                 navigationFrame.Navigate(typeOfPage);
-            return ActualPage = navigationFrame.Content as IPageNavigateable;
+            ActualPage = navigationFrame.Content as IPageNavigateable;
+
+            return ActualPage;
         }
     }
 }

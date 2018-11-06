@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.ComponentModel;
 using System.Reflection;
+using System.Collections.ObjectModel;
 
 namespace AdmissionsManager
 {
@@ -19,26 +20,31 @@ namespace AdmissionsManager
         /// <param name="orderBy">order by (optional)</param>
         /// <param name="sortCriterium"></param>
         /// <returns></returns>
-        public static string CreateCommand(IDatabaseConnectable actualPage, string orderBy = null, 
+        public static string CreateCommand(IDBConnectionStateGettable actualPage, string orderBy = null, 
             SortCriteria sortCriterium = SortCriteria.Ascending)
         {
-            Tabels actualTable = actualPage.GetModelType();
+            string actualTableSqlDescription = actualPage.GetTableDescriptionToSql();
 
-            string commandToReturn = CreateCommand(actualTable, orderBy, sortCriterium);
-            return commandToReturn;
-        }
-        public static string CreateCommand(Tabels actualTable, string orderBy = null,
-            SortCriteria sortCriterium = SortCriteria.Ascending)
-        {
-            
             string commandToReturn = "SELECT * FROM ";
-            commandToReturn += actualTable.GetEnumDescription();
+            commandToReturn += actualTableSqlDescription;
             if (!string.IsNullOrEmpty(orderBy))
             {
                 commandToReturn = CreateCommand(commandToReturn, orderBy, sortCriterium);
             }
             return commandToReturn;
         }
+       /* public static string CreateCommand(string actualTableSqlDescription, string orderBy = null,
+            SortCriteria sortCriterium = SortCriteria.Ascending)
+        {
+            
+            string commandToReturn = "SELECT * FROM ";
+            commandToReturn += actualTableSqlDescription;
+            if (!string.IsNullOrEmpty(orderBy))
+            {
+                commandToReturn = CreateCommand(commandToReturn, orderBy, sortCriterium);
+            }
+            return commandToReturn;
+        }*/
         public static string CreateCommand(string actualCommandToOrder, string orderBy,
             SortCriteria sortCriterium = SortCriteria.Ascending)
         {
@@ -53,7 +59,7 @@ namespace AdmissionsManager
 
         }
 
-        public static string CreateCommand(IDatabaseConnectable actualPage, string searchIn,
+        public static string CreateCommand(IDBConnectionStateGettable actualPage, string searchIn,
             string searchedExpression, string sortBy = null, SortCriteria sortCriterium = SortCriteria.Ascending )
         {
             string commandToReturn = CreateCommand(actualPage);
@@ -71,36 +77,43 @@ namespace AdmissionsManager
             actualCommandToSearch = AddWhereToCommandAndSort(actualCommandToSearch, searchIn, searchedExpression, sortBy, sortCriterium);
             return actualCommandToSearch;
         }
-        public static string CreateDeleteCommand(Tabels actualTable, string primaryKey, string nameOfPrimaryKey)
+        public static string CreateDeleteCommand(IDBConnectionStateGettable actualPage, string primaryKey, string nameOfPrimaryKey)
         {
             
             string commandToReturn = "DELETE FROM ";
-            commandToReturn += actualTable.GetEnumDescription();
+            commandToReturn += actualPage.GetTableDescriptionToSql();
             commandToReturn += " WHERE " + nameOfPrimaryKey + " = '" + primaryKey + "'";
             return commandToReturn;
         }
-        public static string CreateDeleteCommand(Tabels actualTable, int primaryKey, string nameOfPrimaryKey)
+        public static string CreateDeleteCommand(string sqlTableName, string primaryKey, string nameOfPrimaryKey)
+        {
+            string commandToReturn = "DELETE FROM ";
+            commandToReturn += sqlTableName;
+            commandToReturn += " WHERE " + nameOfPrimaryKey + " = '" + primaryKey + "'";
+            return commandToReturn;
+        }
+        public static string CreateDeleteCommand(IDBConnectionStateGettable actualPage, int primaryKey, string nameOfPrimaryKey)
         {
 
             string commandToReturn = "DELETE FROM ";
-            commandToReturn += actualTable.GetEnumDescription();
+            commandToReturn += actualPage.GetTableDescriptionToSql();
             commandToReturn += " WHERE " + nameOfPrimaryKey + " = " + primaryKey;
             return commandToReturn;
         }
-        public static string CreateUpdateCommand(Tabels actualTable, string primaryKey, string nameOfPrimaryKey, 
+        public static string CreateUpdateCommand(IDBConnectionStateGettable actualPage, string primaryKey, string nameOfPrimaryKey, 
             List<string> fieldsToUpdate, List<string> valueToSet)
         {
            
-            string commandToReturn = "UPDATE " + actualTable.GetEnumDescription() + " SET " +
+            string commandToReturn = "UPDATE " + actualPage.GetTableDescriptionToSql() + " SET " +
                 fieldsToUpdate[0] + "='" + valueToSet[0] + "' WHERE " + nameOfPrimaryKey + " = '" + primaryKey + "'";
             if (commandToReturn.Contains(@"'NULL'"))
                 commandToReturn = commandToReturn.Replace(@"'NULL'", "NULL");
             return commandToReturn;
 
         }
-        public static string CreateNewRecordCommand(Tabels actualTable, List<string> valuesList, List<string> columnNames)
+        public static string CreateNewRecordCommand(IDBConnectionStateGettable actualPage, List<string> valuesList, List<string> columnNames)
         {
-            string commandToReturn = "INSERT INTO " + actualTable.GetEnumDescription() + " (";
+            string commandToReturn = "INSERT INTO " + actualPage.GetTableDescriptionToSql() + " (";
             string lastColumn = columnNames.Last();
             string lastValue = valuesList.Last();
             foreach(string column in columnNames)
@@ -128,15 +141,10 @@ namespace AdmissionsManager
             
         }
 
-        public static string ResetCommand(IDatabaseConnectable actualTable)
+        public static string ResetCommand(IDBConnectionStateGettable actualTable)
         {
             return CreateCommand(actualTable);
         }
-        public static string ResetCommand(Tabels actualTable)
-        {
-            return CreateCommand(actualTable);
-        }
-
 
         #region Help methods
 
@@ -168,38 +176,7 @@ namespace AdmissionsManager
             }
             return actualCommand;
         }
-        /*private static string GetTableName(IDatabaseConnectable actualPage)
-        {
-            string commandToReturn;
-            Tabels actualTable = actualPage.GetModelType();
-            switch (actualTable)
-            {
-                case Tabels.Admissions:
-                    commandToReturn = "Przyjecia ";
-                    break;
-                case Tabels.Patients:
-                    commandToReturn = "Pacjenci ";
-                    break;
-                case Tabels.Doctors:
-                    commandToReturn = "Lekarze ";
-                    break;
-                case Tabels.Diagnoses:
-                    commandToReturn = "Diagnozy ";
-                    break;
-                case Tabels.Surgeries:
-                    commandToReturn = "Operacje ";
-                    break;
-                case Tabels.Rooms:
-                    commandToReturn = "Sale ";
-                    break;
-                default:
-                    commandToReturn = null;
-                    break;
-            }
-            
-            return commandToReturn;
-
-        }*/
+       
         #endregion
 
         #region Extensions
@@ -239,6 +216,7 @@ namespace AdmissionsManager
             throw new ArgumentException("Not found.", "description");
 
         }
+        
         
         #endregion
 

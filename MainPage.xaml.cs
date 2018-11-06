@@ -21,15 +21,15 @@ namespace AdmissionsManager
 {
     /// <summary>
     /// Zrobione ostatnio: 
-    /// Nowe Interfejsy, Table -> SqlTable : ISqlTableModelable, IPrimaryKeyGetable; ConnectionString -> App; INavigator,
-    /// IPageNavigateable; Kontroler ViewNavigator : INavigator - przeniesiono nawigację z kontrolera;
-    /// DataValidator + ValidateIfTypeImplementInterface; NavigationPageTypeProvider : TypeProvider i IProvideType;
-    /// Segregacja plikow wzgledem warstw;
+    /// Dodano wlasna observableCollection; poprawa błędu; DatabaseReader; Zmiana odczytywania bazy danych; Dodanie dokumentacj i opisów 
+    /// do nowych klas; SqlCommandCreator - usunięto niepotrzebne metody, możliwa wielokrotna uzytecznosc; Przenoszenie odpowiedzialnosci 
+    /// do modułów podrzadnych; Usunięcie nieotrzebnej metody z kontrolera;
+    /// TERAZ ZROBIC KONTROLERL ODPOWIEDZIALNY ZA ODCZYTYWANIE DANYCH Z DB (moze rejestrowanie modelu?)
     /// SingleResponsibility:
     /// Liskov Substitution:
     /// Interface Segregation:
     /// Open/Closed:
-    
+
     /// 
     /// Zrobione: 
     /// Puste klasy modelu; wstepnie model pacjenta; enum typ tabeli; strony; dzialanie commandbar; przelaczanie miedzy frame;
@@ -63,6 +63,10 @@ namespace AdmissionsManager
     /// Przeniesienie inicjowania strony do eventu Loaded; Zmieniono metode ConnectToDatabase() z IDatabaseConnectable na Task<bool>;
     /// Event Page_Loaded i metoda czyszcząca dane z poprzedniego page przed Navigate zostala dodana (do IDatabaseConnectable);
     /// Regions i poprawiona czytelnosc kodu (DoctorsView i PatientsView);
+    ///     /// Nowe Interfejsy, Table -> SqlTable : ISqlTableModelable, IPrimaryKeyGetable; ConnectionString -> App; INavigator,
+    /// IPageNavigateable; Kontroler ViewNavigator : INavigator - przeniesiono nawigację z kontrolera;
+    /// DataValidator + ValidateIfTypeImplementInterface; NavigationPageTypeProvider : TypeProvider i IProvideType;
+    /// Segregacja plikow wzgledem warstw;
     /// 
     /// Do zrobienia: Pozostałe klasy page; przemyslenie w ktorym miejscu laczyc z baza; Postarac sie nie uzywac Modelu w View;
     /// Dodanie w kontrolerze na stałe parametrów zapytania (Lub np. wlasciwosc z obecnym page (IDatabaseConnectable)), ma to pomoc
@@ -80,7 +84,8 @@ namespace AdmissionsManager
         public MainPage()
         {
             this.InitializeComponent();
-            controler = new Controler(mainFrame);
+            
+            controler = new Controler(mainFrame, new DataProviders.DatabaseInfoProvider());
             navigationBar.DataContext = controler;
             
         }
@@ -89,7 +94,10 @@ namespace AdmissionsManager
         {
             string pageTypeName = (sender as AppBarButton).Tag.ToString();
             Type pageType = TypeProvider.GetTypeFromString(pageTypeName);
-            Navigator.ChangeFrame(pageType, mainFrame); 
+
+            IPageNavigateable page = Navigator.ChangeFrame(pageType, mainFrame);
+            controler.SetActualPage(page);
+            //controler.CommandText= SqlCommandFilterCreator.CreateCommand(page as IDBConnectionStateGettable); 
         }
 
         private void Page_Loaded(object sender, RoutedEventArgs e)
@@ -98,14 +106,20 @@ namespace AdmissionsManager
         }
         private void InitializeProperties()
         {
-            IValidateIfInterfaceIsImplemented validator = new Validator();
-            Navigator = new ViewNavigator(validator, mainFrame.Content as IPageNavigateable);
-            Navigator.SetParameter(controler);
+            IValidateIfInterfaceIsImplemented validator = new Validators.Validator();
+            //mainFrame.Content = new AdmissionsPage();
+            Navigator = new ViewNavigator(validator, /*mainFrame.Content as IPageNavigateable*/new AdmissionsPage(), controler);
+            //Navigator.SetParameter(controler);
             TypeProvider = new DataProviders.NavigationPageTypeProvider(validator,
                 new List<Type>
                 {
                     typeof(PatientsPage), typeof(AdmissionsPage), typeof(DoctorsPage),
                 });
+            Type pageType = TypeProvider.GetTypeFromString("AdmissionsPage");
+            
+            Navigator.ChangeFrame(pageType, mainFrame);
+            /*Type type = typeof(Model.Patient);
+            type.In*/
         }
     }
     

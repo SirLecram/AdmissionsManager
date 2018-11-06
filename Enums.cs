@@ -9,9 +9,7 @@ namespace AdmissionsManager
 {
     public enum Tabels
     {
-        /// <summary>
-        /// UWAGA !! DODAC ROZSZERZENIE GetDescription
-        /// </summary>
+        // TODO: Zmienić description na odpowiadajace nazwom sql
         [Description("Strona domowa")]
         Home = 0,
         [Description("Przyjecia")]

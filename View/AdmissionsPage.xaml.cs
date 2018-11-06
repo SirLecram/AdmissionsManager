@@ -23,17 +23,22 @@ namespace AdmissionsManager.View
     /// <summary>
     /// Pusta strona, która może być używana samodzielnie lub do której można nawigować wewnątrz ramki.
     /// </summary>
-    public sealed partial class AdmissionsPage : Page, IDatabaseConnectable, IPageNavigateable
+    public sealed partial class AdmissionsPage : Page, IDBConnectionStateGettable, IPageNavigateable
     {
         private Controler DatabaseController;
         private bool _IsDataLoaded { get; set; }
-        public bool IsDataLoaded { get => _IsDataLoaded; }
+        public bool IsDataLoaded { get => true; }
+        public Tabels TableOfPage { get; }
+        public IDBInfoProvider DatabaseInfoProvider { get; set; }
 
-        public AdmissionsPage(Controler dbController)
+        public AdmissionsPage(/*Controler dbController*/)
         {
             this.InitializeComponent();
-            DatabaseController = dbController;
-            
+            _IsDataLoaded = true;
+            TableOfPage = Tabels.Admissions;
+            //DatabaseController.OnPropertyChanged("IsDataLoaded");
+            //DatabaseController = dbController;
+
         }
 
         public ObservableCollection<ISqlTableModelable> RecordsList => throw new NotImplementedException();
@@ -47,20 +52,27 @@ namespace AdmissionsManager.View
             return true;
         }
 
-        public Tabels GetModelType()
+        public string GetTableDescriptionToSql()
         {
-            return Tabels.Admissions;
+            
+            return Tabels.Admissions.GetEnumDescription();
         }
 
         public void UnloadPage()
         {
             
         }
-
+        protected override void OnNavigatedTo(NavigationEventArgs e)
+        {
+            DatabaseController = e.Parameter as Controler;
+            _IsDataLoaded = true;
+           // DatabaseController.OnPropertyChanged("IsDataLoaded");
+        }
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             /*test = !test;
             DatabaseController.OnPropertyChanged("IsDataLoaded");*/
         }
+        
     }
 }

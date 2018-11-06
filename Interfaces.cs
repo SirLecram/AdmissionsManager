@@ -43,7 +43,15 @@ namespace AdmissionsManager
 
     public interface IPageNavigateable
     {
+        Tabels TableOfPage { get; }
+        IDBInfoProvider DatabaseInfoProvider { get; set; }
         void UnloadPage();
+    }
+    public interface IDBConnectionStateGettable
+    {
+        bool IsDataLoaded { get; }
+        // TODO: CHWILOWE! DO USUNIECIA
+        string GetTableDescriptionToSql();
     }
     public interface IValidateIfInterfaceIsImplemented
     {
@@ -62,9 +70,18 @@ namespace AdmissionsManager
     {
 
     }*/
+    public interface IHasDefaultModelType
+    {
+        Type GetDefaultModelType();
+    }
     public interface IProvideType
     {
         void RegisterType(Type typeToRegister);
         Type GetTypeFromString(string typeName);
+    }
+    public interface IDBInfoProvider
+    {
+        Task<IEnumerable<string>> GetColumnNamesFromTableAsync(string selectCommandText);
+        Task<IDictionary<int, string>> GetColumnTypeNamesAsync(string selectCommandText);
     }
 }

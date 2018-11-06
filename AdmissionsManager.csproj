@@ -96,9 +96,12 @@
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controlers\Controler.cs" />
+    <Compile Include="Controlers\DatabaseReader.cs" />
     <Compile Include="Controlers\ViewNavigator.cs" />
+    <Compile Include="DataProviders\DatabaseInfoProvider.cs" />
     <Compile Include="DataProviders\NavigationPageTypeProvider.cs" />
     <Compile Include="DataProviders\TypeProvider.cs" />
+    <Compile Include="ExtendedTypes\ObservableRangeCollection.cs" />
     <Compile Include="Validators\Validator.cs" />
     <Compile Include="Enums.cs" />
     <Compile Include="MainPage.xaml.cs">

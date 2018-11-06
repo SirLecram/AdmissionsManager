@@ -26,11 +26,14 @@ namespace AdmissionsManager.View
     /// <summary>
     /// Pusta strona, która może być używana samodzielnie lub do której można nawigować wewnątrz ramki.
     /// </summary>
-    public sealed partial class DoctorsPage : Page, IDatabaseConnectable, IPageNavigateable
+    public sealed partial class DoctorsPage : Page, IDBConnectionStateGettable, IPageNavigateable, IHasDefaultModelType
     {
         private Controler DatabaseController;
         public ObservableCollection<ISqlTableModelable> RecordsList { get => DatabaseController.RecordsList; }
-        private Tabels TableOfPage { get; }
+        public IDBInfoProvider DatabaseInfoProvider { get; set; }
+        // TODO: Usunąc tableOfPAge
+        public Tabels TableOfPage { get; }
+        private Type DefaultModelType { get; set; }
         private bool _IsConnectedToDb { get; set; }
         public bool IsConnectedToDb { get => _IsConnectedToDb; }
         private bool _IsDataLoaded { get; set; }
@@ -43,7 +46,7 @@ namespace AdmissionsManager.View
             pageTitle.Text = "Lekarze (Connecting to database...)";
             _IsConnectedToDb = false;
             TableOfPage = Tabels.Doctors;
-
+            DefaultModelType = typeof(Model.Doctor);
         }
 
         public async Task<bool> ConnectToDatabaseAsync()
@@ -81,9 +84,9 @@ namespace AdmissionsManager.View
             }
         }
 
-        public Tabels GetModelType()
+        public string GetTableDescriptionToSql()
         {
-            return TableOfPage;
+            return TableOfPage.GetEnumDescription();
         }
 
         #region Database management
@@ -111,9 +114,9 @@ namespace AdmissionsManager.View
         }
         private void DeleteRecord()
         {
-            object model = databaseView.SelectedItem;
+            ISqlTableModelable model = databaseView.SelectedItem as ISqlTableModelable;
 
-            DatabaseController.DeleteRecordAsync(model, GetModelType());
+            DatabaseController.DeleteRecordAsync(model, this);
         }
         private async void EditRecord()
         {
@@ -208,11 +211,13 @@ namespace AdmissionsManager.View
             bool IsConnectionAvailable;
             if (IsConnectionAvailable = await ConnectToDatabaseAsync())
             {
-                _IsConnectedToDb = IsConnectionAvailable;
                 databaseView.ItemsSource = RecordsList;
+                _IsConnectedToDb = IsConnectionAvailable;
                 lookInComboBox.SelectedIndex = 0;
                 sortComboBox.SelectedIndex = 0;
                 
+
+
             }
             _IsDataLoaded = true;
             DatabaseController.OnPropertyChanged("IsDataLoaded");
@@ -224,9 +229,15 @@ namespace AdmissionsManager.View
             lookInComboBox.ItemsSource = null;
             sortComboBox.ItemsSource = null;
             _IsDataLoaded = false;
-            DatabaseController.OnPropertyChanged("IsDataLoaded");
+            //DatabaseController.OnPropertyChanged("IsDataLoaded");
+        }
+
+        public Type GetDefaultModelType()
+        {
+            return DefaultModelType;
         }
 
         #endregion
+        
     }
 }
